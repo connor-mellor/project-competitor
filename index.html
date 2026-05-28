@@ -854,6 +854,8 @@ async function openAdminLogin() {
     showLoading(false);
   }
 }
+
+function logout() {
   activeUser = null;
   document.getElementById('adminPanel').classList.remove('visible');
   document.getElementById('activeBar').classList.remove('visible');
