@@ -434,6 +434,7 @@
     <div class="add-row">
       <input class="add-input" id="newName" type="text" placeholder="Your name" maxlength="24" autocomplete="off">
       <input class="pin-input" id="newPin" type="password" inputmode="numeric" placeholder="6-digit PIN" maxlength="6" autocomplete="new-password">
+      <input class="pin-input" id="newDays" type="number" inputmode="numeric" placeholder="Days so far" min="0" max="999" style="width:6.5rem;">
       <button class="btn-add" id="btnAdd" onclick="addMember()">Join</button>
     </div>
   </div>
@@ -739,6 +740,8 @@ async function addMember() {
   const pinInput  = document.getElementById('newPin');
   const name = nameInput.value.trim();
   const pin  = pinInput.value.trim();
+  const daysInput = document.getElementById('newDays');
+  const startDays = Math.max(0, parseInt(daysInput.value) || 0);
 
   if (!name) { nameInput.focus(); return; }
   if (!/^\d{6}$/.test(pin)) {
@@ -757,11 +760,12 @@ async function addMember() {
     await sbFetch('members', {
       method: 'POST',
       prefer: 'return=minimal',
-      body: JSON.stringify({ name: name.toUpperCase(), pin_hash: pinHash, days: 0, is_admin: false })
+      body: JSON.stringify({ name: name.toUpperCase(), pin_hash: pinHash, days: startDays, is_admin: false })
     });
     nameInput.value = '';
     pinInput.value  = '';
-    setStatus(`${name.toUpperCase()} added to the board!`, 'success');
+    daysInput.value = '';
+    setStatus(`${name.toUpperCase()} joined with ${startDays} day${startDays !== 1 ? 's' : ''}!`, 'success');
     await loadAndRender();
   } catch(e) {
     const msg = e.message.includes('unique') ? 'That name is already taken' : 'Error: ' + e.message;
