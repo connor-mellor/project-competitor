@@ -444,7 +444,10 @@
     <button class="btn-reset" onclick="openResetModal()">Reset Season</button>
   </div>
 
-  <footer>Scores synced via Supabase &nbsp;·&nbsp; One log per day enforced &nbsp;·&nbsp; PIN never stored in plain text</footer>
+  <footer>Scores synced via Supabase &nbsp;·&nbsp; One log per day enforced &nbsp;·&nbsp; PIN never stored in plain text
+    <br><br>
+    <span id="adminLoginLink" style="cursor:pointer;opacity:0.3;font-size:0.6rem;letter-spacing:0.15em;" onclick="openAdminLogin()">admin</span>
+  </footer>
 </div>
 
 <!-- PIN Modal -->
@@ -833,7 +836,20 @@ async function submitPin() {
   }
 }
 
-function logout() {
+// ── Admin login ───────────────────────────────────────────────────
+async function openAdminLogin() {
+  if (activeUser?.is_admin) return; // already in
+  showLoading(true);
+  try {
+    const rows = await sbFetch('members?is_admin=eq.true&select=id,name&limit=1');
+    if (!rows?.length) { setStatus('No admin account found', 'error'); showLoading(false); return; }
+    showLoading(false);
+    openPinModal(rows[0].id, rows[0].name);
+  } catch(e) {
+    setStatus('Error: ' + e.message, 'error');
+    showLoading(false);
+  }
+}
   activeUser = null;
   document.getElementById('adminPanel').classList.remove('visible');
   document.getElementById('activeBar').classList.remove('visible');
