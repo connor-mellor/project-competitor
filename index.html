@@ -132,6 +132,7 @@
   .countdown-days { text-align: right; }
   .days-number { font-family: 'Black Ops One', cursive; font-size: 2rem; color: var(--gold); line-height: 1; }
   .days-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+  .countdown-time { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--muted); letter-spacing: 0.15em; margin-top: 0.15rem; }
 
   /* BOARD */
   .board { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem; }
@@ -157,14 +158,12 @@
   .entry.rank-1 { border-left: 3px solid var(--gold); }
   .entry.rank-2 { border-left: 3px solid var(--silver); }
   .entry.rank-3 { border-left: 3px solid var(--bronze); }
-  .entry.is-admin { border-left: 3px solid var(--accent); opacity: 0.5; }
   .entry.is-active { border-color: var(--green); }
 
   .entry-rank { font-family: 'Black Ops One', cursive; font-size: 1.4rem; text-align: center; color: var(--muted); }
   .entry.rank-1 .entry-rank { color: var(--gold); }
   .entry.rank-2 .entry-rank { color: var(--silver); }
   .entry.rank-3 .entry-rank { color: var(--bronze); }
-  .entry.is-admin .entry-rank { color: var(--accent); }
 
   .entry-info { min-width: 0; }
   .entry-name {
@@ -380,14 +379,7 @@
     cursor: pointer; letter-spacing: 0.1em;
   }
 
-  /* CONFIG NOTICE */
-  .config-notice {
-    background: #1a0a00; border: 1px solid #5a3000;
-    padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 0.8rem;
-    letter-spacing: 0.08em; line-height: 1.6; color: #e8a040;
-  }
-  .config-notice strong { display: block; margin-bottom: 0.3rem; letter-spacing: 0.2em; }
-  .config-notice code { background: rgba(0,0,0,0.4); padding: 0.1rem 0.3rem; font-size: 0.75rem; }
+
 
   footer {
     text-align: center; color: var(--muted);
@@ -408,15 +400,7 @@
     <p class="subtitle">Who's actually putting in the work</p>
   </header>
 
-  <!-- Config warning — shown until Supabase is wired up -->
-  <div class="config-notice" id="configNotice" style="display:none">
-    <strong>⚠ Setup Required</strong>
-    Open <code>index.html</code>, find the CONFIG block near the top of the &lt;script&gt;, and replace
-    <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> with your project values.
-    Also run <code>schema.sql</code> in your Supabase SQL editor first.
-  </div>
-
-  <!-- Active user bar -->
+<!-- Active user bar -->
   <div class="active-bar" id="activeBar">
     <div>
       <div class="active-label">Signed in as</div>
@@ -433,7 +417,8 @@
     </div>
     <div class="countdown-days">
       <div class="days-number" id="daysLeft">—</div>
-      <div class="days-label">Days Left</div>
+      <div class="days-label" id="daysLabel">Days Left</div>
+      <div class="countdown-time" id="countdownTime">—</div>
     </div>
   </div>
 
@@ -510,11 +495,11 @@
 //  CONFIG — replace these with your Supabase project values
 //  Project Settings → API → URL and anon/public key
 // ═══════════════════════════════════════════════════════════════════
-const SUPABASE_URL  = 'https://qhwqkvavjfixmkxtyoty.supabase.co/rest/v1/';
+const SUPABASE_URL  = 'https://qhwqkvavjfixmkxtyoty.supabase.co';
 const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFod3FrdmF2amZpeG1reHR5b3R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTE3NTksImV4cCI6MjA5NTU2Nzc1OX0.bYqrBTAOrs7vLhPGmrhy8o5qvnwFVf9mGvZcgcRJHhw';
 // ═══════════════════════════════════════════════════════════════════
 
-const RESET_DATE = new Date('2025-06-29T00:00:00');
+const RESET_DATE = new Date('2026-06-29T00:00:00');
 const CONFIGURED = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
 
 // ── Session state (memory only — clears on tab close) ─────────────
@@ -572,19 +557,31 @@ function setStatus(msg, type = 'info') {
 function updateCountdown() {
   const now  = new Date();
   const diff = RESET_DATE - now;
-  const days = diff > 0 ? Math.ceil(diff / 86400000) : 0;
-  document.getElementById('daysLeft').textContent = days;
+
   document.getElementById('resetDateDisplay').textContent =
     RESET_DATE.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' }).toUpperCase();
+
+  if (diff <= 0) {
+    document.getElementById('daysLeft').textContent = '0';
+    document.getElementById('daysLabel').textContent = 'Days Left';
+    document.getElementById('countdownTime').textContent = 'Season ended';
+    return;
+  }
+
+  const totalSecs = Math.floor(diff / 1000);
+  const days  = Math.floor(totalSecs / 86400);
+  const hours = Math.floor((totalSecs % 86400) / 3600);
+  const mins  = Math.floor((totalSecs % 3600) / 60);
+  const secs  = totalSecs % 60;
+
+  document.getElementById('daysLeft').textContent = days;
+  document.getElementById('daysLabel').textContent = days === 1 ? 'Day Left' : 'Days Left';
+  document.getElementById('countdownTime').textContent =
+    `${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
 }
 
 // ── Render ────────────────────────────────────────────────────────
 async function loadAndRender() {
-  if (!CONFIGURED) {
-    document.getElementById('configNotice').style.display = 'block';
-    document.getElementById('board').innerHTML = '<div class="empty">Configure Supabase to get started</div>';
-    return;
-  }
   showLoading(true);
   try {
     const members = await sbFetch('members?order=days.desc,name.asc&select=id,name,days,last_logged,is_admin');
@@ -598,82 +595,79 @@ async function loadAndRender() {
 
 function renderBoard(members) {
   const board = document.getElementById('board');
+  const isAdmin = activeUser?.is_admin;
 
-  // Filter out admin from leaderboard display rankings (admin shown at bottom)
+  // Admin never appears on the leaderboard
   const competitors = members.filter(m => !m.is_admin);
-  const admins = members.filter(m => m.is_admin);
-  const sorted = [...competitors, ...admins];
 
-  if (sorted.length === 0) {
+  if (competitors.length === 0) {
     board.innerHTML = '<div class="empty">No competitors yet — be the first to join</div>';
-    return;
-  }
+  } else {
+    board.innerHTML = '';
+    competitors.forEach((m, i) => {
+      const rank = i + 1;
+      const loggedToday = hasLoggedToday(m);
+      const isMe = activeUser && activeUser.id === m.id;
 
-  board.innerHTML = '';
-  let rankCounter = 0;
-
-  sorted.forEach((m, i) => {
-    if (!m.is_admin) rankCounter++;
-    const rank = m.is_admin ? null : rankCounter;
-    const loggedToday = hasLoggedToday(m);
-    const isMe = activeUser && activeUser.id === m.id;
-
-    let lastText = '';
-    if (m.last_logged && !m.is_admin) {
-      if (loggedToday) {
-        lastText = 'Logged today ✓';
-      } else {
-        const dt = new Date(m.last_logged + 'T12:00:00');
-        lastText = `Last: ${dt.toLocaleDateString('en-GB', { day:'numeric', month:'short' })}`;
+      let lastText = '';
+      if (m.last_logged) {
+        if (loggedToday) {
+          lastText = 'Logged today ✓';
+        } else {
+          const dt = new Date(m.last_logged + 'T12:00:00');
+          lastText = `Last: ${dt.toLocaleDateString('en-GB', { day:'numeric', month:'short' })}`;
+        }
       }
-    }
 
-    const el = document.createElement('div');
-    const rankClass = m.is_admin ? 'is-admin' : (rank <= 3 ? `rank-${rank}` : '');
-    el.className = `entry ${rankClass} ${isMe ? 'is-active' : ''}`.trim();
-    el.id = `entry-${m.id}`;
-    el.style.animationDelay = `${i * 0.05}s`;
+      const el = document.createElement('div');
+      el.className = `entry ${rank <= 3 ? `rank-${rank}` : ''} ${isMe ? 'is-active' : ''}`.trim();
+      el.id = `entry-${m.id}`;
+      el.style.animationDelay = `${i * 0.05}s`;
 
-    const rankDisplay = m.is_admin ? '★' : rank;
+      // Control logic:
+      // - Admin logged in → unrestricted +/− on every row, no today constraint
+      // - Own row → +/− with today constraint
+      // - Someone else's row → lock button to sign in
+      let controlsHtml;
+      if (isAdmin) {
+        controlsHtml = `
+          <div class="entry-controls">
+            <button class="btn-control add" onclick="addDay('${m.id}')">+</button>
+            <button class="btn-control sub" onclick="subDay('${m.id}')" ${m.days <= 0 ? 'disabled' : ''}>−</button>
+          </div>`;
+      } else if (isMe) {
+        controlsHtml = `
+          <div class="entry-controls">
+            <button class="btn-control add" onclick="addDay('${m.id}')" ${loggedToday ? 'disabled title="Already logged today"' : ''}>+</button>
+            <button class="btn-control sub" onclick="subDay('${m.id}')" ${m.days <= 0 ? 'disabled' : ''}>−</button>
+          </div>`;
+      } else {
+        controlsHtml = `<button class="btn-lock" onclick="openPinModal('${m.id}','${escHtml(m.name)}')" title="Sign in as ${escHtml(m.name)}">🔒</button>`;
+      }
 
-    // Controls: if this is my row → show +/−, else show lock button
-    let controlsHtml;
-    if (m.is_admin) {
-      controlsHtml = `<div style="width:2rem"></div>`;
-    } else if (isMe) {
-      controlsHtml = `
-        <div class="entry-controls">
-          <button class="btn-control add" onclick="addDay('${m.id}')" ${loggedToday ? 'disabled title="Already logged today"' : ''}>+</button>
-          <button class="btn-control sub" onclick="subDay('${m.id}')" ${m.days <= 0 ? 'disabled' : ''}>−</button>
-        </div>`;
-    } else {
-      controlsHtml = `<button class="btn-lock" onclick="openPinModal('${m.id}','${escHtml(m.name)}')" title="Sign in as ${escHtml(m.name)}">🔒</button>`;
-    }
-
-    el.innerHTML = `
-      ${loggedToday && !m.is_admin ? '<span class="today-badge">Today ✓</span>' : ''}
-      ${m.is_admin ? '<span class="admin-badge">Admin</span>' : ''}
-      <div class="entry-rank">${rankDisplay}</div>
-      <div class="entry-info">
-        <div class="entry-name">${escHtml(m.name)}</div>
-        ${m.is_admin ? '' : `<div class="entry-last-logged">${lastText}</div>`}
-      </div>
-      ${m.is_admin ? '<div></div>' : `
+      el.innerHTML = `
+        ${loggedToday ? '<span class="today-badge">Today ✓</span>' : ''}
+        <div class="entry-rank">${rank}</div>
+        <div class="entry-info">
+          <div class="entry-name">${escHtml(m.name)}</div>
+          <div class="entry-last-logged">${lastText}</div>
+        </div>
         <div class="entry-days">
           <div class="days-count">${m.days}</div>
           <span class="days-unit">days</span>
-        </div>`}
-      ${controlsHtml}
-    `;
-    board.appendChild(el);
-  });
+        </div>
+        ${controlsHtml}
+      `;
+      board.appendChild(el);
+    });
+  }
 
   // Active bar
   const bar = document.getElementById('activeBar');
   if (activeUser) {
     bar.classList.add('visible');
     document.getElementById('activeBarName').textContent = activeUser.name;
-    if (activeUser.is_admin) document.getElementById('adminPanel').classList.add('visible');
+    if (isAdmin) document.getElementById('adminPanel').classList.add('visible');
   } else {
     bar.classList.remove('visible');
     document.getElementById('adminPanel').classList.remove('visible');
@@ -682,15 +676,21 @@ function renderBoard(members) {
 
 // ── Add day ───────────────────────────────────────────────────────
 async function addDay(id) {
-  if (!activeUser || activeUser.id !== id) return;
+  const isAdmin = activeUser?.is_admin;
+  if (!activeUser) return;
+  if (!isAdmin && activeUser.id !== id) return;
   showLoading(true);
   try {
+    const current = await getCurrentDays(id);
+    const patch = { days: current + 1 };
+    // Only stamp last_logged if not admin (admin edits don't affect the daily log)
+    if (!isAdmin) patch.last_logged = todayISO();
     await sbFetch(`members?id=eq.${id}`, {
       method: 'PATCH',
       prefer: 'return=minimal',
-      body: JSON.stringify({ days: await getCurrentDays(id) + 1, last_logged: todayISO() })
+      body: JSON.stringify(patch)
     });
-    setStatus('Session logged! 💪', 'success');
+    if (!isAdmin) setStatus('Session logged! 💪', 'success');
     await loadAndRender();
   } catch(e) {
     setStatus('Error: ' + e.message, 'error');
@@ -700,15 +700,19 @@ async function addDay(id) {
 
 // ── Sub day ───────────────────────────────────────────────────────
 async function subDay(id) {
-  if (!activeUser || activeUser.id !== id) return;
+  const isAdmin = activeUser?.is_admin;
+  if (!activeUser) return;
+  if (!isAdmin && activeUser.id !== id) return;
   showLoading(true);
   try {
     const current = await getCurrentDays(id);
     if (current <= 0) { showLoading(false); return; }
     const patch = { days: current - 1 };
-    // If they logged today, clear it so they could re-add
-    const members = await sbFetch(`members?id=eq.${id}&select=last_logged`);
-    if (members?.[0]?.last_logged === todayISO()) patch.last_logged = null;
+    // If non-admin subs and had logged today, clear it so they can re-add
+    if (!isAdmin) {
+      const rows = await sbFetch(`members?id=eq.${id}&select=last_logged`);
+      if (rows?.[0]?.last_logged === todayISO()) patch.last_logged = null;
+    }
     await sbFetch(`members?id=eq.${id}`, {
       method: 'PATCH',
       prefer: 'return=minimal',
@@ -872,7 +876,7 @@ document.addEventListener('keydown', e => {
 
 // ── Init ──────────────────────────────────────────────────────────
 updateCountdown();
-setInterval(updateCountdown, 60000);
+setInterval(updateCountdown, 1000);
 // Poll for updates every 30s so everyone sees live scores
 setInterval(loadAndRender, 30000);
 loadAndRender();
