@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GYM BOARD</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #1a1a1a;
+    --border: #2a2a2a;
+    --gold: #f5c842;
+    --silver: #b0b8c8;
+    --bronze: #cd7f32;
+    --accent: #ff3c3c;
+    --text: #f0f0f0;
+    --muted: #666;
+    --green: #39d353;
+    --rank-bg: #161616;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow Condensed', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  .container { max-width: 700px; margin: 0 auto; padding: 0 1rem 4rem; }
+
+  /* HEADER */
+  header { padding: 2.5rem 0 1.5rem; text-align: center; }
+
+  .title {
+    font-family: 'Black Ops One', cursive;
+    font-size: clamp(3rem, 12vw, 6rem);
+    letter-spacing: 0.05em;
+    line-height: 0.9;
+    color: var(--text);
+    text-shadow: 0 0 40px rgba(255,60,60,0.3);
+  }
+  .title span { color: var(--accent); display: block; }
+
+  .subtitle {
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.5rem;
+  }
+
+  /* ACTIVE USER BAR */
+  .active-bar {
+    display: none;
+    background: var(--surface2);
+    border: 1px solid var(--green);
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .active-bar.visible { display: flex; }
+
+  .active-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .active-name {
+    font-family: 'Black Ops One', cursive;
+    font-size: 1rem;
+    color: var(--green);
+    letter-spacing: 0.05em;
+  }
+  .btn-logout {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 0.3rem 0.75rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-logout:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* COUNTDOWN */
+  .countdown-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--accent);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .countdown-bar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,60,60,0.03), transparent);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+  }
+  .countdown-label { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); }
+  .countdown-date { font-family: 'Black Ops One', cursive; font-size: 1.1rem; color: var(--accent); letter-spacing: 0.1em; }
+  .countdown-days { text-align: right; }
+  .days-number { font-family: 'Black Ops One', cursive; font-size: 2rem; color: var(--gold); line-height: 1; }
+  .days-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+
+  /* BOARD */
+  .board { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem; }
+
+  .entry {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 3rem 1fr auto auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.4s ease both;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .entry:hover { border-color: #333; background: var(--surface2); }
+  .entry.rank-1 { border-left: 3px solid var(--gold); }
+  .entry.rank-2 { border-left: 3px solid var(--silver); }
+  .entry.rank-3 { border-left: 3px solid var(--bronze); }
+  .entry.is-admin { border-left: 3px solid var(--accent); opacity: 0.5; }
+  .entry.is-active { border-color: var(--green); }
+
+  .entry-rank { font-family: 'Black Ops One', cursive; font-size: 1.4rem; text-align: center; color: var(--muted); }
+  .entry.rank-1 .entry-rank { color: var(--gold); }
+  .entry.rank-2 .entry-rank { color: var(--silver); }
+  .entry.rank-3 .entry-rank { color: var(--bronze); }
+  .entry.is-admin .entry-rank { color: var(--accent); }
+
+  .entry-info { min-width: 0; }
+  .entry-name {
+    font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em;
+    text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .entry-last-logged { font-size: 0.65rem; color: var(--muted); margin-top: 0.1rem; }
+
+  .entry-days { text-align: center; }
+  .days-count { font-family: 'Black Ops One', cursive; font-size: 1.8rem; line-height: 1; color: var(--green); }
+  .days-unit { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); display: block; }
+
+  .entry-controls { display: flex; flex-direction: column; gap: 0.3rem; }
+
+  .btn-control {
+    width: 2rem; height: 2rem;
+    border: 1px solid var(--border);
+    background: var(--rank-bg);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s ease;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+  }
+  .btn-control.add:hover:not(:disabled) { background: var(--green); border-color: var(--green); color: #000; transform: scale(1.1); }
+  .btn-control.sub:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); color: #fff; transform: scale(1.1); }
+  .btn-control:disabled { opacity: 0.2; cursor: not-allowed; }
+
+  /* Lock button — shown when not authed as this member */
+  .btn-lock {
+    width: 2rem; height: 4.3rem;
+    border: 1px solid var(--border);
+    background: var(--rank-bg);
+    color: var(--muted);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s ease;
+  }
+  .btn-lock:hover { border-color: var(--gold); color: var(--gold); }
+
+  .today-badge {
+    position: absolute; top: 0.3rem; right: 0.3rem;
+    background: var(--green); color: #000;
+    font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 0.15rem 0.4rem; font-weight: 700;
+  }
+  .admin-badge {
+    position: absolute; top: 0.3rem; right: 0.3rem;
+    background: var(--accent); color: #fff;
+    font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 0.15rem 0.4rem; font-weight: 700;
+  }
+
+  /* ADD MEMBER */
+  .add-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--gold);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .add-title { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+  .add-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  .add-input {
+    flex: 1; min-width: 120px;
+    background: var(--rank-bg); border: 1px solid var(--border);
+    color: var(--text); padding: 0.6rem 0.85rem;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em; outline: none; transition: border-color 0.2s;
+  }
+  .add-input:focus { border-color: var(--gold); }
+  .add-input::placeholder { color: var(--muted); font-weight: 400; text-transform: none; }
+
+  .pin-input {
+    width: 7rem;
+    background: var(--rank-bg); border: 1px solid var(--border);
+    color: var(--text); padding: 0.6rem 0.85rem;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 600;
+    letter-spacing: 0.2em; outline: none; transition: border-color 0.2s;
+    text-align: center;
+  }
+  .pin-input:focus { border-color: var(--gold); }
+  .pin-input::placeholder { color: var(--muted); font-weight: 400; letter-spacing: 0.05em; }
+
+  .btn-add {
+    background: var(--gold); color: #000; border: none;
+    padding: 0.6rem 1.25rem;
+    font-family: 'Black Ops One', cursive; font-size: 0.9rem; letter-spacing: 0.05em;
+    cursor: pointer; transition: all 0.15s ease; white-space: nowrap;
+  }
+  .btn-add:hover { background: #ffd960; transform: scale(1.03); }
+  .btn-add:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ADMIN PANEL */
+  .admin-panel {
+    display: none;
+    border: 1px solid var(--accent);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: rgba(255,60,60,0.04);
+  }
+  .admin-panel.visible { display: flex; }
+  .admin-panel-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
+  .btn-reset {
+    background: transparent; border: 1px solid var(--accent); color: var(--accent);
+    padding: 0.5rem 1rem;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: all 0.15s ease;
+  }
+  .btn-reset:hover { background: var(--accent); color: #fff; }
+
+  /* STATUS BAR */
+  .status { min-height: 1.4rem; margin-bottom: 0.5rem; text-align: center; }
+  .status-msg {
+    font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 0.3rem 0.75rem; display: inline-block;
+  }
+  .status-msg.error { color: var(--accent); }
+  .status-msg.success { color: var(--green); }
+  .status-msg.info { color: var(--muted); }
+
+  /* LOADING */
+  .loading-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(10,10,10,0.7);
+    z-index: 300; align-items: center; justify-content: center;
+  }
+  .loading-overlay.visible { display: flex; }
+  .spinner {
+    width: 2.5rem; height: 2.5rem;
+    border: 3px solid var(--border); border-top-color: var(--gold);
+    border-radius: 50%; animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* EMPTY */
+  .empty {
+    text-align: center; padding: 3rem 1rem;
+    color: var(--muted); font-size: 0.85rem; letter-spacing: 0.2em;
+    text-transform: uppercase; border: 1px dashed var(--border);
+  }
+
+  /* BUMP */
+  @keyframes bump {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.04); }
+    100% { transform: scale(1); }
+  }
+  .bump { animation: bump 0.3s ease; }
+
+  /* MODALS */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85); z-index: 200;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-top: 2px solid var(--gold);
+    padding: 2rem; max-width: 360px; width: 90%; text-align: center;
+  }
+  .modal.danger { border-top-color: var(--accent); }
+  .modal h2 { font-family: 'Black Ops One', cursive; font-size: 1.5rem; margin-bottom: 0.4rem; }
+  .modal h2.gold { color: var(--gold); }
+  .modal h2.red { color: var(--accent); }
+  .modal p { color: var(--muted); font-size: 0.85rem; letter-spacing: 0.08em; margin-bottom: 1.25rem; line-height: 1.5; }
+  .modal-name { color: var(--text); font-weight: 700; text-transform: uppercase; }
+
+  .pin-dots {
+    display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.25rem;
+  }
+  .pin-dot {
+    width: 0.75rem; height: 0.75rem;
+    border: 2px solid var(--border); border-radius: 50%;
+    transition: all 0.15s;
+  }
+  .pin-dot.filled { background: var(--gold); border-color: var(--gold); }
+
+  .pin-pad {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem; margin-bottom: 1rem;
+  }
+  .pin-key {
+    background: var(--rank-bg); border: 1px solid var(--border); color: var(--text);
+    padding: 0.75rem; font-family: 'Black Ops One', cursive; font-size: 1.1rem;
+    cursor: pointer; transition: all 0.12s; letter-spacing: 0.05em;
+  }
+  .pin-key:hover { background: var(--surface2); border-color: #444; }
+  .pin-key:active { transform: scale(0.94); }
+  .pin-key.del { color: var(--muted); font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; font-weight: 700; }
+  .pin-key.wide { grid-column: span 3; }
+
+  .modal-error { color: var(--accent); font-size: 0.75rem; letter-spacing: 0.15em; min-height: 1.2rem; margin-bottom: 0.5rem; }
+
+  .modal-actions { display: flex; gap: 0.75rem; justify-content: center; }
+  .btn-confirm {
+    background: var(--accent); color: #fff; border: none;
+    padding: 0.6rem 1.5rem;
+    font-family: 'Black Ops One', cursive; font-size: 0.9rem;
+    cursor: pointer; letter-spacing: 0.05em;
+  }
+  .btn-cancel {
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    padding: 0.6rem 1.25rem;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.1em;
+  }
+
+  /* CONFIG NOTICE */
+  .config-notice {
+    background: #1a0a00; border: 1px solid #5a3000;
+    padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 0.8rem;
+    letter-spacing: 0.08em; line-height: 1.6; color: #e8a040;
+  }
+  .config-notice strong { display: block; margin-bottom: 0.3rem; letter-spacing: 0.2em; }
+  .config-notice code { background: rgba(0,0,0,0.4); padding: 0.1rem 0.3rem; font-size: 0.75rem; }
+
+  footer {
+    text-align: center; color: var(--muted);
+    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding-top: 2rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- Loading spinner -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
+
+<div class="container">
+  <header>
+    <h1 class="title">GYM<span>BOARD</span></h1>
+    <p class="subtitle">Who's actually putting in the work</p>
+  </header>
+
+  <!-- Config warning — shown until Supabase is wired up -->
+  <div class="config-notice" id="configNotice" style="display:none">
+    <strong>⚠ Setup Required</strong>
+    Open <code>index.html</code>, find the CONFIG block near the top of the &lt;script&gt;, and replace
+    <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> with your project values.
+    Also run <code>schema.sql</code> in your Supabase SQL editor first.
+  </div>
+
+  <!-- Active user bar -->
+  <div class="active-bar" id="activeBar">
+    <div>
+      <div class="active-label">Signed in as</div>
+      <div class="active-name" id="activeBarName">—</div>
+    </div>
+    <button class="btn-logout" onclick="logout()">Switch user</button>
+  </div>
+
+  <!-- Countdown -->
+  <div class="countdown-bar">
+    <div>
+      <div class="countdown-label">Season Reset</div>
+      <div class="countdown-date" id="resetDateDisplay">—</div>
+    </div>
+    <div class="countdown-days">
+      <div class="days-number" id="daysLeft">—</div>
+      <div class="days-label">Days Left</div>
+    </div>
+  </div>
+
+  <!-- Status line -->
+  <div class="status" id="status"></div>
+
+  <!-- Leaderboard -->
+  <div class="board" id="board"></div>
+
+  <!-- Add member -->
+  <div class="add-section">
+    <div class="add-title">Join the Board</div>
+    <div class="add-row">
+      <input class="add-input" id="newName" type="text" placeholder="Your name" maxlength="24" autocomplete="off">
+      <input class="pin-input" id="newPin" type="password" inputmode="numeric" placeholder="6-digit PIN" maxlength="6" autocomplete="new-password">
+      <button class="btn-add" id="btnAdd" onclick="addMember()">Join</button>
+    </div>
+  </div>
+
+  <!-- Admin panel — only shown when admin is authed -->
+  <div class="admin-panel" id="adminPanel">
+    <div class="admin-panel-label">Admin Controls</div>
+    <button class="btn-reset" onclick="openResetModal()">Reset Season</button>
+  </div>
+
+  <footer>Scores synced via Supabase &nbsp;·&nbsp; One log per day enforced &nbsp;·&nbsp; PIN never stored in plain text</footer>
+</div>
+
+<!-- PIN Modal -->
+<div class="modal-overlay" id="pinModal">
+  <div class="modal">
+    <h2 class="gold">ENTER PIN</h2>
+    <p>Sign in as <span class="modal-name" id="pinModalName">—</span> to log your session</p>
+    <div class="pin-dots" id="pinDots">
+      <div class="pin-dot" id="dot0"></div>
+      <div class="pin-dot" id="dot1"></div>
+      <div class="pin-dot" id="dot2"></div>
+      <div class="pin-dot" id="dot3"></div>
+      <div class="pin-dot" id="dot4"></div>
+      <div class="pin-dot" id="dot5"></div>
+    </div>
+    <div class="modal-error" id="pinError"></div>
+    <div class="pin-pad">
+      <button class="pin-key" onclick="pinKey('1')">1</button>
+      <button class="pin-key" onclick="pinKey('2')">2</button>
+      <button class="pin-key" onclick="pinKey('3')">3</button>
+      <button class="pin-key" onclick="pinKey('4')">4</button>
+      <button class="pin-key" onclick="pinKey('5')">5</button>
+      <button class="pin-key" onclick="pinKey('6')">6</button>
+      <button class="pin-key" onclick="pinKey('7')">7</button>
+      <button class="pin-key" onclick="pinKey('8')">8</button>
+      <button class="pin-key" onclick="pinKey('9')">9</button>
+      <button class="pin-key del" onclick="pinDel()">⌫</button>
+      <button class="pin-key" onclick="pinKey('0')">0</button>
+      <button class="pin-key del" onclick="closePinModal()">✕</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reset confirm modal -->
+<div class="modal-overlay" id="resetModal">
+  <div class="modal danger">
+    <h2 class="red">RESET?</h2>
+    <p>This will wipe <strong>all scores</strong> back to zero for every competitor. This cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeResetModal()">Cancel</button>
+      <button class="btn-confirm" onclick="confirmReset()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  CONFIG — replace these with your Supabase project values
+//  Project Settings → API → URL and anon/public key
+// ═══════════════════════════════════════════════════════════════════
+const SUPABASE_URL  = 'https://qhwqkvavjfixmkxtyoty.supabase.co/rest/v1/';
+const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFod3FrdmF2amZpeG1reHR5b3R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTE3NTksImV4cCI6MjA5NTU2Nzc1OX0.bYqrBTAOrs7vLhPGmrhy8o5qvnwFVf9mGvZcgcRJHhw';
+// ═══════════════════════════════════════════════════════════════════
+
+const RESET_DATE = new Date('2025-06-29T00:00:00');
+const CONFIGURED = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
+
+// ── Session state (memory only — clears on tab close) ─────────────
+let activeUser = null;   // { id, name, is_admin }
+
+// ── Helpers ───────────────────────────────────────────────────────
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function sbFetch(path, opts = {}) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    ...opts,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || '',
+      ...(opts.headers || {})
+    }
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `HTTP ${res.status}`);
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+function todayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function hasLoggedToday(member) {
+  return member.last_logged === todayISO();
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showLoading(v) {
+  document.getElementById('loadingOverlay').classList.toggle('visible', v);
+}
+
+function setStatus(msg, type = 'info') {
+  const el = document.getElementById('status');
+  el.innerHTML = msg ? `<span class="status-msg ${type}">${msg}</span>` : '';
+  if (msg) setTimeout(() => { if (el.querySelector('.status-msg')?.textContent === msg) el.innerHTML = ''; }, 3000);
+}
+
+// ── Countdown ─────────────────────────────────────────────────────
+function updateCountdown() {
+  const now  = new Date();
+  const diff = RESET_DATE - now;
+  const days = diff > 0 ? Math.ceil(diff / 86400000) : 0;
+  document.getElementById('daysLeft').textContent = days;
+  document.getElementById('resetDateDisplay').textContent =
+    RESET_DATE.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' }).toUpperCase();
+}
+
+// ── Render ────────────────────────────────────────────────────────
+async function loadAndRender() {
+  if (!CONFIGURED) {
+    document.getElementById('configNotice').style.display = 'block';
+    document.getElementById('board').innerHTML = '<div class="empty">Configure Supabase to get started</div>';
+    return;
+  }
+  showLoading(true);
+  try {
+    const members = await sbFetch('members?order=days.desc,name.asc&select=id,name,days,last_logged,is_admin');
+    renderBoard(members);
+  } catch(e) {
+    setStatus('Failed to load — ' + e.message, 'error');
+  } finally {
+    showLoading(false);
+  }
+}
+
+function renderBoard(members) {
+  const board = document.getElementById('board');
+
+  // Filter out admin from leaderboard display rankings (admin shown at bottom)
+  const competitors = members.filter(m => !m.is_admin);
+  const admins = members.filter(m => m.is_admin);
+  const sorted = [...competitors, ...admins];
+
+  if (sorted.length === 0) {
+    board.innerHTML = '<div class="empty">No competitors yet — be the first to join</div>';
+    return;
+  }
+
+  board.innerHTML = '';
+  let rankCounter = 0;
+
+  sorted.forEach((m, i) => {
+    if (!m.is_admin) rankCounter++;
+    const rank = m.is_admin ? null : rankCounter;
+    const loggedToday = hasLoggedToday(m);
+    const isMe = activeUser && activeUser.id === m.id;
+
+    let lastText = '';
+    if (m.last_logged && !m.is_admin) {
+      if (loggedToday) {
+        lastText = 'Logged today ✓';
+      } else {
+        const dt = new Date(m.last_logged + 'T12:00:00');
+        lastText = `Last: ${dt.toLocaleDateString('en-GB', { day:'numeric', month:'short' })}`;
+      }
+    }
+
+    const el = document.createElement('div');
+    const rankClass = m.is_admin ? 'is-admin' : (rank <= 3 ? `rank-${rank}` : '');
+    el.className = `entry ${rankClass} ${isMe ? 'is-active' : ''}`.trim();
+    el.id = `entry-${m.id}`;
+    el.style.animationDelay = `${i * 0.05}s`;
+
+    const rankDisplay = m.is_admin ? '★' : rank;
+
+    // Controls: if this is my row → show +/−, else show lock button
+    let controlsHtml;
+    if (m.is_admin) {
+      controlsHtml = `<div style="width:2rem"></div>`;
+    } else if (isMe) {
+      controlsHtml = `
+        <div class="entry-controls">
+          <button class="btn-control add" onclick="addDay('${m.id}')" ${loggedToday ? 'disabled title="Already logged today"' : ''}>+</button>
+          <button class="btn-control sub" onclick="subDay('${m.id}')" ${m.days <= 0 ? 'disabled' : ''}>−</button>
+        </div>`;
+    } else {
+      controlsHtml = `<button class="btn-lock" onclick="openPinModal('${m.id}','${escHtml(m.name)}')" title="Sign in as ${escHtml(m.name)}">🔒</button>`;
+    }
+
+    el.innerHTML = `
+      ${loggedToday && !m.is_admin ? '<span class="today-badge">Today ✓</span>' : ''}
+      ${m.is_admin ? '<span class="admin-badge">Admin</span>' : ''}
+      <div class="entry-rank">${rankDisplay}</div>
+      <div class="entry-info">
+        <div class="entry-name">${escHtml(m.name)}</div>
+        ${m.is_admin ? '' : `<div class="entry-last-logged">${lastText}</div>`}
+      </div>
+      ${m.is_admin ? '<div></div>' : `
+        <div class="entry-days">
+          <div class="days-count">${m.days}</div>
+          <span class="days-unit">days</span>
+        </div>`}
+      ${controlsHtml}
+    `;
+    board.appendChild(el);
+  });
+
+  // Active bar
+  const bar = document.getElementById('activeBar');
+  if (activeUser) {
+    bar.classList.add('visible');
+    document.getElementById('activeBarName').textContent = activeUser.name;
+    if (activeUser.is_admin) document.getElementById('adminPanel').classList.add('visible');
+  } else {
+    bar.classList.remove('visible');
+    document.getElementById('adminPanel').classList.remove('visible');
+  }
+}
+
+// ── Add day ───────────────────────────────────────────────────────
+async function addDay(id) {
+  if (!activeUser || activeUser.id !== id) return;
+  showLoading(true);
+  try {
+    await sbFetch(`members?id=eq.${id}`, {
+      method: 'PATCH',
+      prefer: 'return=minimal',
+      body: JSON.stringify({ days: await getCurrentDays(id) + 1, last_logged: todayISO() })
+    });
+    setStatus('Session logged! 💪', 'success');
+    await loadAndRender();
+  } catch(e) {
+    setStatus('Error: ' + e.message, 'error');
+    showLoading(false);
+  }
+}
+
+// ── Sub day ───────────────────────────────────────────────────────
+async function subDay(id) {
+  if (!activeUser || activeUser.id !== id) return;
+  showLoading(true);
+  try {
+    const current = await getCurrentDays(id);
+    if (current <= 0) { showLoading(false); return; }
+    const patch = { days: current - 1 };
+    // If they logged today, clear it so they could re-add
+    const members = await sbFetch(`members?id=eq.${id}&select=last_logged`);
+    if (members?.[0]?.last_logged === todayISO()) patch.last_logged = null;
+    await sbFetch(`members?id=eq.${id}`, {
+      method: 'PATCH',
+      prefer: 'return=minimal',
+      body: JSON.stringify(patch)
+    });
+    await loadAndRender();
+  } catch(e) {
+    setStatus('Error: ' + e.message, 'error');
+    showLoading(false);
+  }
+}
+
+async function getCurrentDays(id) {
+  const rows = await sbFetch(`members?id=eq.${id}&select=days`);
+  return rows?.[0]?.days ?? 0;
+}
+
+// ── Add member ────────────────────────────────────────────────────
+async function addMember() {
+  const nameInput = document.getElementById('newName');
+  const pinInput  = document.getElementById('newPin');
+  const name = nameInput.value.trim();
+  const pin  = pinInput.value.trim();
+
+  if (!name) { nameInput.focus(); return; }
+  if (!/^\d{6}$/.test(pin)) {
+    pinInput.style.borderColor = 'var(--accent)';
+    setTimeout(() => pinInput.style.borderColor = '', 1200);
+    setStatus('PIN must be exactly 6 digits', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btnAdd');
+  btn.disabled = true;
+  showLoading(true);
+
+  try {
+    const pinHash = await sha256(pin);
+    await sbFetch('members', {
+      method: 'POST',
+      prefer: 'return=minimal',
+      body: JSON.stringify({ name: name.toUpperCase(), pin_hash: pinHash, days: 0, is_admin: false })
+    });
+    nameInput.value = '';
+    pinInput.value  = '';
+    setStatus(`${name.toUpperCase()} added to the board!`, 'success');
+    await loadAndRender();
+  } catch(e) {
+    const msg = e.message.includes('unique') ? 'That name is already taken' : 'Error: ' + e.message;
+    setStatus(msg, 'error');
+    showLoading(false);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ── PIN modal ─────────────────────────────────────────────────────
+let pinTarget = null;
+let pinBuffer = '';
+
+function openPinModal(id, name) {
+  pinTarget = { id, name };
+  pinBuffer = '';
+  updatePinDots();
+  document.getElementById('pinModalName').textContent = name;
+  document.getElementById('pinError').textContent = '';
+  document.getElementById('pinModal').classList.add('open');
+}
+
+function closePinModal() {
+  document.getElementById('pinModal').classList.remove('open');
+  pinTarget = null;
+  pinBuffer = '';
+}
+
+function pinKey(digit) {
+  if (pinBuffer.length >= 6) return;
+  pinBuffer += digit;
+  updatePinDots();
+  if (pinBuffer.length === 6) setTimeout(submitPin, 120);
+}
+
+function pinDel() {
+  pinBuffer = pinBuffer.slice(0, -1);
+  updatePinDots();
+  document.getElementById('pinError').textContent = '';
+}
+
+function updatePinDots() {
+  for (let i = 0; i < 6; i++) {
+    document.getElementById(`dot${i}`).classList.toggle('filled', i < pinBuffer.length);
+  }
+}
+
+async function submitPin() {
+  if (!pinTarget || pinBuffer.length !== 6) return;
+  showLoading(true);
+  try {
+    const hash = await sha256(pinBuffer);
+    const rows = await sbFetch(`members?id=eq.${pinTarget.id}&select=id,name,pin_hash,is_admin`);
+    const member = rows?.[0];
+    if (!member || member.pin_hash !== hash) {
+      document.getElementById('pinError').textContent = 'Incorrect PIN';
+      pinBuffer = '';
+      updatePinDots();
+      showLoading(false);
+      return;
+    }
+    activeUser = { id: member.id, name: member.name, is_admin: member.is_admin };
+    closePinModal();
+    setStatus(`Signed in as ${member.name}`, 'success');
+    await loadAndRender();
+  } catch(e) {
+    document.getElementById('pinError').textContent = 'Error — try again';
+    pinBuffer = '';
+    updatePinDots();
+    showLoading(false);
+  }
+}
+
+function logout() {
+  activeUser = null;
+  document.getElementById('adminPanel').classList.remove('visible');
+  document.getElementById('activeBar').classList.remove('visible');
+  loadAndRender();
+}
+
+// ── Reset ─────────────────────────────────────────────────────────
+function openResetModal()  { document.getElementById('resetModal').classList.add('open'); }
+function closeResetModal() { document.getElementById('resetModal').classList.remove('open'); }
+
+async function confirmReset() {
+  closeResetModal();
+  showLoading(true);
+  try {
+    // Reset all non-admin members
+    await sbFetch('members?is_admin=eq.false', {
+      method: 'PATCH',
+      prefer: 'return=minimal',
+      body: JSON.stringify({ days: 0, last_logged: null })
+    });
+    setStatus('Season reset — everyone back to zero', 'success');
+    await loadAndRender();
+  } catch(e) {
+    setStatus('Reset failed: ' + e.message, 'error');
+    showLoading(false);
+  }
+}
+
+// ── Keyboard shortcuts ────────────────────────────────────────────
+document.getElementById('newName').addEventListener('keydown', e => { if (e.key === 'Enter') addMember(); });
+document.getElementById('newPin').addEventListener('keydown',  e => { if (e.key === 'Enter') addMember(); });
+document.addEventListener('keydown', e => {
+  if (document.getElementById('pinModal').classList.contains('open')) {
+    if (e.key >= '0' && e.key <= '9') pinKey(e.key);
+    if (e.key === 'Backspace') pinDel();
+    if (e.key === 'Escape') closePinModal();
+  }
+  if (e.key === 'Escape') closeResetModal();
+});
+
+// ── Init ──────────────────────────────────────────────────────────
+updateCountdown();
+setInterval(updateCountdown, 60000);
+// Poll for updates every 30s so everyone sees live scores
+setInterval(loadAndRender, 30000);
+loadAndRender();
+</script>
+</body>
+</html>
