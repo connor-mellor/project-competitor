@@ -19,6 +19,7 @@
     --muted: #666;
     --green: #39d353;
     --rank-bg: #161616;
+    --orange: #ffa000;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -43,8 +44,7 @@
   .container { max-width: 700px; margin: 0 auto; padding: 0 1rem 4rem; }
 
   /* HEADER */
-  header { padding: 2.5rem 0 1.5rem; text-align: center; }
-
+  header { padding: 2.5rem 0 1rem; text-align: center; }
   .title {
     font-family: 'Black Ops One', cursive;
     font-size: clamp(3rem, 12vw, 6rem);
@@ -54,14 +54,18 @@
     text-shadow: 0 0 40px rgba(255,60,60,0.3);
   }
   .title span { color: var(--accent); display: block; }
+  .subtitle { font-size: 0.85rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); margin-top: 0.5rem; }
 
-  .subtitle {
-    font-size: 0.85rem;
-    letter-spacing: 0.3em;
+  /* COLLECTIVE STAT */
+  .collective {
+    text-align: center;
+    padding: 0.5rem 0 1.5rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--muted);
-    margin-top: 0.5rem;
   }
+  .collective strong { color: var(--gold); font-family: 'Black Ops One', cursive; font-size: 1rem; }
 
   /* ACTIVE USER BAR */
   .active-bar {
@@ -75,58 +79,28 @@
     gap: 1rem;
   }
   .active-bar.visible { display: flex; }
-
-  .active-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .active-name {
-    font-family: 'Black Ops One', cursive;
-    font-size: 1rem;
-    color: var(--green);
-    letter-spacing: 0.05em;
-  }
+  .active-label { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); }
+  .active-name { font-family: 'Black Ops One', cursive; font-size: 1rem; color: var(--green); letter-spacing: 0.05em; }
   .btn-logout {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 0.3rem 0.75rem;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.15s;
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    padding: 0.3rem 0.75rem; font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    cursor: pointer; transition: all 0.15s;
   }
   .btn-logout:hover { border-color: var(--accent); color: var(--accent); }
 
   /* COUNTDOWN */
   .countdown-bar {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: 2px solid var(--accent);
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    position: relative;
-    overflow: hidden;
+    background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--accent);
+    padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1.5rem; position: relative; overflow: hidden;
   }
   .countdown-bar::before {
-    content: '';
-    position: absolute;
-    inset: 0;
+    content: ''; position: absolute; inset: 0;
     background: linear-gradient(90deg, transparent, rgba(255,60,60,0.03), transparent);
     animation: shimmer 3s ease-in-out infinite;
   }
-  @keyframes shimmer {
-    0%, 100% { transform: translateX(-100%); }
-    50% { transform: translateX(100%); }
-  }
+  @keyframes shimmer { 0%, 100% { transform: translateX(-100%); } 50% { transform: translateX(100%); } }
   .countdown-label { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); }
   .countdown-date { font-family: 'Black Ops One', cursive; font-size: 1.1rem; color: var(--accent); letter-spacing: 0.1em; }
   .countdown-days { text-align: right; }
@@ -134,31 +108,52 @@
   .days-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
   .countdown-time { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--muted); letter-spacing: 0.15em; margin-top: 0.15rem; }
 
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--border);
+  }
+  .tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    padding: 0.65rem 1rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-right: 1px solid var(--border);
+  }
+  .tab:last-child { border-right: none; }
+  .tab:hover { color: var(--text); background: var(--surface2); }
+  .tab.active { background: var(--surface); color: var(--gold); border-bottom: 2px solid var(--gold); }
+
   /* BOARD */
-  .board { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem; }
+  .board { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem; max-height: 60vh; overflow-y: auto; padding-right: 2px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+  .board::-webkit-scrollbar { width: 4px; }
+  .board::-webkit-scrollbar-track { background: transparent; }
+  .board::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
   .entry {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    display: grid;
-    grid-template-columns: 3rem 1fr auto auto;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.85rem 1rem;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    background: var(--surface); border: 1px solid var(--border);
+    display: grid; grid-template-columns: 3rem 1fr auto auto;
+    align-items: center; gap: 1rem; padding: 0.85rem 1rem;
+    transition: all 0.3s ease; position: relative; overflow: hidden;
     animation: slideIn 0.4s ease both;
   }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateX(-20px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
   .entry:hover { border-color: #333; background: var(--surface2); }
   .entry.rank-1 { border-left: 3px solid var(--gold); }
   .entry.rank-2 { border-left: 3px solid var(--silver); }
   .entry.rank-3 { border-left: 3px solid var(--bronze); }
   .entry.is-active { border-color: var(--green); }
+  .entry.inactive-warning { border-left: 3px solid var(--accent); opacity: 0.7; }
 
   .entry-rank { font-family: 'Black Ops One', cursive; font-size: 1.4rem; text-align: center; color: var(--muted); }
   .entry.rank-1 .entry-rank { color: var(--gold); }
@@ -166,94 +161,83 @@
   .entry.rank-3 .entry-rank { color: var(--bronze); }
 
   .entry-info { min-width: 0; }
-  .entry-name {
-    font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em;
-    text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .entry-last-logged { font-size: 0.65rem; color: var(--muted); margin-top: 0.1rem; }
+  .entry-name { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .entry-tagline { font-size: 0.75rem; color: var(--muted); margin-top: 0.1rem; letter-spacing: 0.05em; font-style: italic; }
+  .entry-last-logged { font-size: 0.8rem; color: var(--muted); margin-top: 0.15rem; letter-spacing: 0.08em; }
+  .entry-inactive { font-size: 0.75rem; color: var(--accent); margin-top: 0.1rem; letter-spacing: 0.08em; }
 
   .entry-days { text-align: center; }
   .days-count { font-family: 'Black Ops One', cursive; font-size: 1.8rem; line-height: 1; color: var(--green); }
   .days-unit { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); display: block; }
 
   .entry-controls { display: flex; flex-direction: column; gap: 0.3rem; }
-
   .btn-control {
-    width: 2rem; height: 2rem;
-    border: 1px solid var(--border);
-    background: var(--rank-bg);
-    color: var(--text);
-    font-size: 1.1rem;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s ease;
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    width: 2rem; height: 2rem; border: 1px solid var(--border); background: var(--rank-bg);
+    color: var(--text); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center;
+    justify-content: center; transition: all 0.15s ease; font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
   }
   .btn-control.add:hover:not(:disabled) { background: var(--green); border-color: var(--green); color: #000; transform: scale(1.1); }
   .btn-control.sub:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); color: #fff; transform: scale(1.1); }
   .btn-control:disabled { opacity: 0.2; cursor: not-allowed; }
 
-  /* Lock button — shown when not authed as this member */
   .btn-lock {
-    width: 2rem; height: 4.3rem;
-    border: 1px solid var(--border);
-    background: var(--rank-bg);
-    color: var(--muted);
-    font-size: 1rem;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s ease;
+    width: 2rem; height: 4.3rem; border: 1px solid var(--border); background: var(--rank-bg);
+    color: var(--muted); font-size: 1rem; cursor: pointer; display: flex; align-items: center;
+    justify-content: center; transition: all 0.15s ease;
   }
   .btn-lock:hover { border-color: var(--gold); color: var(--gold); }
 
   .today-badge {
-    position: absolute; top: 0.3rem; right: 0.3rem;
-    background: var(--green); color: #000;
-    font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase;
-    padding: 0.15rem 0.4rem; font-weight: 700;
+    position: absolute; top: 0.3rem; right: 0.3rem; background: var(--green); color: #000;
+    font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.15rem 0.4rem; font-weight: 700;
   }
-  .admin-badge {
-    position: absolute; top: 0.3rem; right: 0.3rem;
-    background: var(--accent); color: #fff;
-    font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase;
-    padding: 0.15rem 0.4rem; font-weight: 700;
+
+  /* BADGES ROW */
+  .entry-badges { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.25rem; }
+
+  .streak-badge {
+    display: inline-flex; align-items: center; gap: 0.2rem;
+    background: rgba(255,160,0,0.12); border: 1px solid rgba(255,160,0,0.35);
+    color: var(--orange); font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 0.15rem 0.45rem;
   }
+  .pb-badge {
+    display: inline-flex; align-items: center; gap: 0.2rem;
+    background: rgba(245,200,66,0.1); border: 1px solid rgba(245,200,66,0.3);
+    color: var(--gold); font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 0.15rem 0.45rem;
+  }
+
+  /* RIVAL */
+  .rival-group { display: flex; gap: 0; }
+  .rival-bracket { width: 4px; background: var(--muted); border-radius: 2px; flex-shrink: 0; margin-right: 0.5rem; opacity: 0.4; }
+  .rival-entries { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; min-width: 0; }
+  .rival-name { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 0.2rem; font-weight: 600; }
+  .rival-name span { color: var(--gold); font-weight: 700; }
 
   /* ADD MEMBER */
   .add-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: 2px solid var(--gold);
-    padding: 1.25rem 1.5rem;
-    margin-bottom: 1rem;
+    background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--gold);
+    padding: 1.25rem 1.5rem; margin-bottom: 1rem;
   }
   .add-title { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
   .add-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-
   .add-input {
-    flex: 1; min-width: 120px;
-    background: var(--rank-bg); border: 1px solid var(--border);
-    color: var(--text); padding: 0.6rem 0.85rem;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.05em; outline: none; transition: border-color 0.2s;
+    flex: 1; min-width: 120px; background: var(--rank-bg); border: 1px solid var(--border);
+    color: var(--text); padding: 0.6rem 0.85rem; font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; outline: none; transition: border-color 0.2s;
   }
   .add-input:focus { border-color: var(--gold); }
   .add-input::placeholder { color: var(--muted); font-weight: 400; text-transform: none; }
-
   .pin-input {
-    width: 7rem;
-    background: var(--rank-bg); border: 1px solid var(--border);
-    color: var(--text); padding: 0.6rem 0.85rem;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 600;
-    letter-spacing: 0.2em; outline: none; transition: border-color 0.2s;
-    text-align: center;
+    width: 7rem; background: var(--rank-bg); border: 1px solid var(--border); color: var(--text);
+    padding: 0.6rem 0.85rem; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 600;
+    letter-spacing: 0.2em; outline: none; transition: border-color 0.2s; text-align: center;
   }
   .pin-input:focus { border-color: var(--gold); }
   .pin-input::placeholder { color: var(--muted); font-weight: 400; letter-spacing: 0.05em; }
-
   .btn-add {
-    background: var(--gold); color: #000; border: none;
-    padding: 0.6rem 1.25rem;
+    background: var(--gold); color: #000; border: none; padding: 0.6rem 1.25rem;
     font-family: 'Black Ops One', cursive; font-size: 0.9rem; letter-spacing: 0.05em;
     cursor: pointer; transition: all 0.15s ease; white-space: nowrap;
   }
@@ -262,137 +246,82 @@
 
   /* ADMIN PANEL */
   .admin-panel {
-    display: none;
-    border: 1px solid var(--accent);
-    padding: 1rem 1.5rem;
-    margin-bottom: 1rem;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    background: rgba(255,60,60,0.04);
+    display: none; border: 1px solid var(--accent); padding: 1rem 1.5rem; margin-bottom: 1rem;
+    align-items: center; justify-content: space-between; gap: 1rem; background: rgba(255,60,60,0.04);
   }
   .admin-panel.visible { display: flex; }
   .admin-panel-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
   .btn-reset {
     background: transparent; border: 1px solid var(--accent); color: var(--accent);
-    padding: 0.5rem 1rem;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; font-weight: 700;
-    letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: all 0.15s ease;
+    padding: 0.5rem 1rem; font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem;
+    font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: all 0.15s ease;
   }
   .btn-reset:hover { background: var(--accent); color: #fff; }
 
-  /* STATUS BAR */
+  /* STATUS */
   .status { min-height: 1.4rem; margin-bottom: 0.5rem; text-align: center; }
-  .status-msg {
-    font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
-    padding: 0.3rem 0.75rem; display: inline-block;
-  }
+  .status-msg { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.3rem 0.75rem; display: inline-block; }
   .status-msg.error { color: var(--accent); }
   .status-msg.success { color: var(--green); }
   .status-msg.info { color: var(--muted); }
 
   /* LOADING */
-  .loading-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(10,10,10,0.7);
-    z-index: 300; align-items: center; justify-content: center;
-  }
+  .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(10,10,10,0.7); z-index: 300; align-items: center; justify-content: center; }
   .loading-overlay.visible { display: flex; }
-  .spinner {
-    width: 2.5rem; height: 2.5rem;
-    border: 3px solid var(--border); border-top-color: var(--gold);
-    border-radius: 50%; animation: spin 0.7s linear infinite;
-  }
+  .spinner { width: 2.5rem; height: 2.5rem; border: 3px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* EMPTY */
-  .empty {
-    text-align: center; padding: 3rem 1rem;
-    color: var(--muted); font-size: 0.85rem; letter-spacing: 0.2em;
-    text-transform: uppercase; border: 1px dashed var(--border);
-  }
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; border: 1px dashed var(--border); }
 
   /* BUMP */
-  @keyframes bump {
-    0% { transform: scale(1); }
-    40% { transform: scale(1.04); }
-    100% { transform: scale(1); }
-  }
+  @keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.04); } 100% { transform: scale(1); } }
   .bump { animation: bump 0.3s ease; }
 
   /* MODALS */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.85); z-index: 200;
-    align-items: center; justify-content: center;
-  }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; }
   .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--surface); border: 1px solid var(--border);
-    border-top: 2px solid var(--gold);
-    padding: 2rem; max-width: 360px; width: 90%; text-align: center;
-  }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--gold); padding: 2rem; max-width: 360px; width: 90%; text-align: center; }
   .modal.danger { border-top-color: var(--accent); }
   .modal h2 { font-family: 'Black Ops One', cursive; font-size: 1.5rem; margin-bottom: 0.4rem; }
   .modal h2.gold { color: var(--gold); }
   .modal h2.red { color: var(--accent); }
   .modal p { color: var(--muted); font-size: 0.85rem; letter-spacing: 0.08em; margin-bottom: 1.25rem; line-height: 1.5; }
   .modal-name { color: var(--text); font-weight: 700; text-transform: uppercase; }
-
-  .pin-dots {
-    display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.25rem;
-  }
-  .pin-dot {
-    width: 0.75rem; height: 0.75rem;
-    border: 2px solid var(--border); border-radius: 50%;
-    transition: all 0.15s;
-  }
+  .pin-dots { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.25rem; }
+  .pin-dot { width: 0.75rem; height: 0.75rem; border: 2px solid var(--border); border-radius: 50%; transition: all 0.15s; }
   .pin-dot.filled { background: var(--gold); border-color: var(--gold); }
-
-  .pin-pad {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem; margin-bottom: 1rem;
-  }
-  .pin-key {
-    background: var(--rank-bg); border: 1px solid var(--border); color: var(--text);
-    padding: 0.75rem; font-family: 'Black Ops One', cursive; font-size: 1.1rem;
-    cursor: pointer; transition: all 0.12s; letter-spacing: 0.05em;
-  }
+  .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
+  .pin-key { background: var(--rank-bg); border: 1px solid var(--border); color: var(--text); padding: 0.75rem; font-family: 'Black Ops One', cursive; font-size: 1.1rem; cursor: pointer; transition: all 0.12s; letter-spacing: 0.05em; }
   .pin-key:hover { background: var(--surface2); border-color: #444; }
   .pin-key:active { transform: scale(0.94); }
   .pin-key.del { color: var(--muted); font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; font-weight: 700; }
-  .pin-key.wide { grid-column: span 3; }
-
   .modal-error { color: var(--accent); font-size: 0.75rem; letter-spacing: 0.15em; min-height: 1.2rem; margin-bottom: 0.5rem; }
-
   .modal-actions { display: flex; gap: 0.75rem; justify-content: center; }
-  .btn-confirm {
-    background: var(--accent); color: #fff; border: none;
-    padding: 0.6rem 1.5rem;
-    font-family: 'Black Ops One', cursive; font-size: 0.9rem;
-    cursor: pointer; letter-spacing: 0.05em;
-  }
-  .btn-cancel {
-    background: transparent; border: 1px solid var(--border); color: var(--muted);
-    padding: 0.6rem 1.25rem;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; font-weight: 700;
-    cursor: pointer; letter-spacing: 0.1em;
-  }
+  .btn-confirm { background: var(--accent); color: #fff; border: none; padding: 0.6rem 1.5rem; font-family: 'Black Ops One', cursive; font-size: 0.9rem; cursor: pointer; letter-spacing: 0.05em; }
+  .btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 0.6rem 1.25rem; font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; letter-spacing: 0.1em; }
 
-
-
-  footer {
-    text-align: center; color: var(--muted);
-    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding-top: 2rem;
+  /* ICON PICKER */
+  .icon-picker { margin-top: 0.75rem; }
+  .icon-picker-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+  .icon-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .icon-opt {
+    width: 2.4rem; height: 2.4rem; font-size: 1.3rem;
+    background: var(--rank-bg); border: 2px solid var(--border);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s; border-radius: 2px;
   }
+  .icon-opt:hover { border-color: var(--gold); transform: scale(1.1); }
+  .icon-opt.selected { border-color: var(--gold); background: rgba(245,200,66,0.15); }
+
+  .entry-icon { font-size: 1.3rem; line-height: 1; margin-bottom: 0.1rem; }
+
+  footer { text-align: center; color: var(--muted); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding-top: 2rem; }
 </style>
 </head>
 <body>
 
-<!-- Loading spinner -->
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="spinner"></div>
-</div>
+<div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
 
 <div class="container">
   <header>
@@ -400,16 +329,19 @@
     <p class="subtitle">Who's actually putting in the work</p>
   </header>
 
-<!-- Active user bar -->
+  <div class="collective" id="collectiveStat"></div>
+
   <div class="active-bar" id="activeBar">
     <div>
       <div class="active-label">Signed in as</div>
       <div class="active-name" id="activeBarName">—</div>
     </div>
-    <button class="btn-logout" onclick="logout()">Switch user</button>
+    <div style="display:flex;gap:0.5rem;">
+      <button class="btn-logout" onclick="changeIcon()">Change Icon</button>
+      <button class="btn-logout" onclick="logout()">Switch user</button>
+    </div>
   </div>
 
-  <!-- Countdown -->
   <div class="countdown-bar">
     <div>
       <div class="countdown-label">Season Reset</div>
@@ -422,13 +354,15 @@
     </div>
   </div>
 
-  <!-- Status line -->
   <div class="status" id="status"></div>
 
-  <!-- Leaderboard -->
+  <div class="tabs">
+    <button class="tab active" id="tabAll" onclick="switchTab('all')">All Time</button>
+    <button class="tab" id="tabWeek" onclick="switchTab('week')">This Week</button>
+  </div>
+
   <div class="board" id="board"></div>
 
-  <!-- Add member -->
   <div class="add-section">
     <div class="add-title">Join the Board</div>
     <div class="add-row">
@@ -437,9 +371,12 @@
       <input class="pin-input" id="newDays" type="number" inputmode="numeric" placeholder="Days so far" min="0" max="999" style="width:6.5rem;">
       <button class="btn-add" id="btnAdd" onclick="addMember()">Join</button>
     </div>
+    <div class="icon-picker">
+      <div class="icon-picker-label">Pick your icon</div>
+      <div class="icon-grid" id="signupIconGrid"></div>
+    </div>
   </div>
 
-  <!-- Admin panel — only shown when admin is authed -->
   <div class="admin-panel" id="adminPanel">
     <div class="admin-panel-label">Admin Controls</div>
     <button class="btn-reset" onclick="openResetModal()">Reset Season</button>
@@ -457,12 +394,9 @@
     <h2 class="gold">ENTER PIN</h2>
     <p>Sign in as <span class="modal-name" id="pinModalName">—</span> to log your session</p>
     <div class="pin-dots" id="pinDots">
-      <div class="pin-dot" id="dot0"></div>
-      <div class="pin-dot" id="dot1"></div>
-      <div class="pin-dot" id="dot2"></div>
-      <div class="pin-dot" id="dot3"></div>
-      <div class="pin-dot" id="dot4"></div>
-      <div class="pin-dot" id="dot5"></div>
+      <div class="pin-dot" id="dot0"></div><div class="pin-dot" id="dot1"></div>
+      <div class="pin-dot" id="dot2"></div><div class="pin-dot" id="dot3"></div>
+      <div class="pin-dot" id="dot4"></div><div class="pin-dot" id="dot5"></div>
     </div>
     <div class="modal-error" id="pinError"></div>
     <div class="pin-pad">
@@ -494,22 +428,36 @@
   </div>
 </div>
 
+<!-- Icon picker modal (post-login) -->
+<div class="modal-overlay" id="iconModal">
+  <div class="modal">
+    <h2 class="gold">YOUR ICON</h2>
+    <p>Pick an icon to display next to your name</p>
+    <div class="icon-grid" id="iconModalGrid" style="justify-content:center;margin-bottom:1.25rem;"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeIconModal()">Skip</button>
+      <button class="btn-confirm" style="background:var(--gold);color:#000;" onclick="saveIcon()">Save</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ═══════════════════════════════════════════════════════════════════
-//  CONFIG — replace these with your Supabase project values
-//  Project Settings → API → URL and anon/public key
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════════════════════
 const SUPABASE_URL  = 'https://qhwqkvavjfixmkxtyoty.supabase.co';
 const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFod3FrdmF2amZpeG1reHR5b3R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTE3NTksImV4cCI6MjA5NTU2Nzc1OX0.bYqrBTAOrs7vLhPGmrhy8o5qvnwFVf9mGvZcgcRJHhw';
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 
 const RESET_DATE = new Date('2026-06-29T00:00:00');
-const CONFIGURED = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
 
-// ── Session state (memory only — clears on tab close) ─────────────
-let activeUser = null;   // { id, name, is_admin }
+const GYM_ICONS = ['💪','🏋️','🥊','🔥','⚡','🏃','🎯','🦁','💀','🐺','🤖','⚔️','🏅','💎','🧱','🩸'];
 
-// ── Helpers ───────────────────────────────────────────────────────
+let activeUser = null;
+let currentTab = 'all';
+let cachedMembers = [];
+
+// ── Helpers ───────────────────────────────────────────
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
@@ -539,17 +487,13 @@ function todayISO() {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
-function hasLoggedToday(member) {
-  return member.last_logged === todayISO();
-}
+function hasLoggedToday(member) { return member.last_logged === todayISO(); }
 
 function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function showLoading(v) {
-  document.getElementById('loadingOverlay').classList.toggle('visible', v);
-}
+function showLoading(v) { document.getElementById('loadingOverlay').classList.toggle('visible', v); }
 
 function setStatus(msg, type = 'info') {
   const el = document.getElementById('status');
@@ -557,38 +501,65 @@ function setStatus(msg, type = 'info') {
   if (msg) setTimeout(() => { if (el.querySelector('.status-msg')?.textContent === msg) el.innerHTML = ''; }, 3000);
 }
 
-// ── Countdown ─────────────────────────────────────────────────────
+// ── Week helpers ──────────────────────────────────────
+function getWeekStart() {
+  const d = new Date();
+  const day = d.getDay(); // 0=Sun
+  const monday = new Date(d);
+  monday.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+  return `${monday.getFullYear()}-${String(monday.getMonth()+1).padStart(2,'0')}-${String(monday.getDate()).padStart(2,'0')}`;
+}
+
+// ── Taglines ──────────────────────────────────────────
+function getTagline(member, rank, total, daysSinceLast) {
+  if (daysSinceLast > 5) return "Where have you been? 👻";
+  if (daysSinceLast > 2) return "Slacking a little... 💤";
+  if (member.streak >= 7) return "Unstoppable. Absolute machine 🤖";
+  if (member.streak >= 4) return "On a serious roll 🔥";
+  if (member.streak >= 2) return "Momentum building 💪";
+  if (rank === 1 && total > 1) return "Top of the board — stay hungry 👑";
+  if (rank === total && total > 1) return "Last place. Time to grind 😤";
+  if (hasLoggedToday(member)) return "Session logged. Respect ✅";
+  return "The grind never stops 💀";
+}
+
+// ── Countdown ─────────────────────────────────────────
 function updateCountdown() {
   const now  = new Date();
   const diff = RESET_DATE - now;
-
   document.getElementById('resetDateDisplay').textContent =
     RESET_DATE.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' }).toUpperCase();
-
   if (diff <= 0) {
     document.getElementById('daysLeft').textContent = '0';
     document.getElementById('daysLabel').textContent = 'Days Left';
     document.getElementById('countdownTime').textContent = 'Season ended';
     return;
   }
-
   const totalSecs = Math.floor(diff / 1000);
   const days  = Math.floor(totalSecs / 86400);
   const hours = Math.floor((totalSecs % 86400) / 3600);
   const mins  = Math.floor((totalSecs % 3600) / 60);
   const secs  = totalSecs % 60;
-
   document.getElementById('daysLeft').textContent = days;
   document.getElementById('daysLabel').textContent = days === 1 ? 'Day Left' : 'Days Left';
   document.getElementById('countdownTime').textContent =
     `${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
 }
 
-// ── Render ────────────────────────────────────────────────────────
+// ── Tab switching ─────────────────────────────────────
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tabAll').classList.toggle('active', tab === 'all');
+  document.getElementById('tabWeek').classList.toggle('active', tab === 'week');
+  renderBoard(cachedMembers);
+}
+
+// ── Load & render ─────────────────────────────────────
 async function loadAndRender() {
   showLoading(true);
   try {
-    const members = await sbFetch('members?order=days.desc,name.asc&select=id,name,days,last_logged,is_admin');
+    const members = await sbFetch('members?order=days.desc,name.asc&select=id,name,days,last_logged,streak,pb_streak,weekly_days,week_start,icon,is_admin');
+    cachedMembers = members;
     renderBoard(members);
   } catch(e) {
     setStatus('Failed to load — ' + e.message, 'error');
@@ -600,19 +571,91 @@ async function loadAndRender() {
 function renderBoard(members) {
   const board = document.getElementById('board');
   const isAdmin = activeUser?.is_admin;
+  const weekStart = getWeekStart();
 
-  // Admin never appears on the leaderboard
   const competitors = members.filter(m => !m.is_admin);
+
+  // Collective stat
+  const totalDays = competitors.reduce((s, m) => s + (m.days || 0), 0);
+  document.getElementById('collectiveStat').innerHTML =
+    totalDays > 0
+      ? `<strong>${totalDays}</strong> days logged collectively this season`
+      : '';
 
   if (competitors.length === 0) {
     board.innerHTML = '<div class="empty">No competitors yet — be the first to join</div>';
+    updateActiveBar(isAdmin);
+    return;
+  }
+
+  // Sort by tab
+  let sorted;
+  if (currentTab === 'week') {
+    sorted = [...competitors].sort((a, b) => {
+      const aw = a.week_start === weekStart ? (a.weekly_days || 0) : 0;
+      const bw = b.week_start === weekStart ? (b.weekly_days || 0) : 0;
+      return bw - aw || a.name.localeCompare(b.name);
+    });
   } else {
-    board.innerHTML = '';
-    competitors.forEach((m, i) => {
-      const rank = i + 1;
+    sorted = [...competitors].sort((a, b) => b.days - a.days || a.name.localeCompare(b.name));
+  }
+
+  const scoreKey = currentTab === 'week'
+    ? m => m.week_start === weekStart ? (m.weekly_days || 0) : 0
+    : m => m.days;
+
+  // Assign ranks
+  let rank = 1;
+  sorted.forEach((m, i) => {
+    if (i > 0 && scoreKey(m) < scoreKey(sorted[i - 1])) rank = i + 1;
+    m._rank = rank;
+  });
+
+  // Group ties
+  const groups = [];
+  sorted.forEach((m, i) => {
+    if (i === 0 || scoreKey(m) !== scoreKey(sorted[i - 1])) {
+      groups.push([m]);
+    } else {
+      groups[groups.length - 1].push(m);
+    }
+  });
+
+  board.innerHTML = '';
+
+  groups.forEach(group => {
+    const isTied = group.length > 1;
+    let entriesContainer;
+    if (isTied) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'rival-group';
+      const bracket = document.createElement('div');
+      bracket.className = 'rival-bracket';
+      entriesContainer = document.createElement('div');
+      entriesContainer.className = 'rival-entries';
+      wrapper.appendChild(bracket);
+      wrapper.appendChild(entriesContainer);
+      board.appendChild(wrapper);
+    } else {
+      entriesContainer = board;
+    }
+
+    group.forEach((m, gi) => {
       const loggedToday = hasLoggedToday(m);
       const isMe = activeUser && activeUser.id === m.id;
+      const rivalNames = group.filter(r => r.id !== m.id).map(r => r.name);
+      const score = scoreKey(m);
 
+      // Days since last logged
+      let daysSinceLast = 999;
+      if (m.last_logged) {
+        const last = new Date(m.last_logged + 'T12:00:00');
+        daysSinceLast = Math.floor((new Date() - last) / 86400000);
+      }
+
+      const isInactive = daysSinceLast > 3 && m.days > 0;
+
+      // Last logged text
       let lastText = '';
       if (m.last_logged) {
         if (loggedToday) {
@@ -623,50 +666,68 @@ function renderBoard(members) {
         }
       }
 
-      const el = document.createElement('div');
-      el.className = `entry ${rank <= 3 ? `rank-${rank}` : ''} ${isMe ? 'is-active' : ''}`.trim();
-      el.id = `entry-${m.id}`;
-      el.style.animationDelay = `${i * 0.05}s`;
+      const tagline = getTagline(m, m._rank, sorted.length, daysSinceLast);
 
-      // Control logic:
-      // - Admin logged in → unrestricted +/− on every row, no today constraint
-      // - Own row → +/− with today constraint
-      // - Someone else's row → lock button to sign in
+      const rankClass = m._rank <= 3 ? `rank-${m._rank}` : '';
+      const el = document.createElement('div');
+      el.className = `entry ${rankClass} ${isMe ? 'is-active' : ''} ${isInactive ? 'inactive-warning' : ''}`.trim();
+      el.id = `entry-${m.id}`;
+      el.style.animationDelay = `${gi * 0.05}s`;
+
+      // Badges
+      const streakHtml = (m.streak && m.streak >= 2)
+        ? `<span class="streak-badge">🔥 ${m.streak} day streak</span>` : '';
+      const pbHtml = (m.pb_streak && m.pb_streak >= 2)
+        ? `<span class="pb-badge">🏅 PB ${m.pb_streak} days</span>` : '';
+      const badgesHtml = (streakHtml || pbHtml)
+        ? `<div class="entry-badges">${streakHtml}${pbHtml}</div>` : '';
+
+      const rivalHtml = isTied
+        ? `<div class="rival-name">⚔ Rivals: <span>${rivalNames.map(escHtml).join(', ')}</span></div>` : '';
+
+      const inactiveHtml = isInactive
+        ? `<div class="entry-inactive">⚠ ${daysSinceLast} days since last session</div>` : '';
+
       let controlsHtml;
       if (isAdmin) {
-        controlsHtml = `
-          <div class="entry-controls">
-            <button class="btn-control add" onclick="addDay('${m.id}')">+</button>
-            <button class="btn-control sub" onclick="subDay('${m.id}')" ${m.days <= 0 ? 'disabled' : ''}>−</button>
-          </div>`;
+        controlsHtml = `<div class="entry-controls">
+          <button class="btn-control add" onclick="addDay('${m.id}')">+</button>
+          <button class="btn-control sub" onclick="subDay('${m.id}')" ${m.days <= 0 ? 'disabled' : ''}>−</button>
+        </div>`;
       } else if (isMe) {
-        controlsHtml = `
-          <div class="entry-controls">
-            <button class="btn-control add" onclick="addDay('${m.id}')" ${loggedToday ? 'disabled title="Already logged today"' : ''}>+</button>
-            <button class="btn-control sub" onclick="subDay('${m.id}')" ${m.days <= 0 ? 'disabled' : ''}>−</button>
-          </div>`;
+        controlsHtml = `<div class="entry-controls">
+          <button class="btn-control add" onclick="addDay('${m.id}')" ${loggedToday ? 'disabled title="Already logged today"' : ''}>+</button>
+          <button class="btn-control sub" onclick="subDay('${m.id}')" ${m.days <= 0 ? 'disabled' : ''}>−</button>
+        </div>`;
       } else {
         controlsHtml = `<button class="btn-lock" onclick="openPinModal('${m.id}','${escHtml(m.name)}')" title="Sign in as ${escHtml(m.name)}">🔒</button>`;
       }
 
       el.innerHTML = `
         ${loggedToday ? '<span class="today-badge">Today ✓</span>' : ''}
-        <div class="entry-rank">${rank}</div>
+        <div class="entry-rank">${m._rank}</div>
         <div class="entry-info">
-          <div class="entry-name">${escHtml(m.name)}</div>
+          <div class="entry-name">${m.icon ? `<span class="entry-icon">${m.icon}</span> ` : ''}${escHtml(m.name)}</div>
+          <div class="entry-tagline">${escHtml(tagline)}</div>
+          ${badgesHtml}
           <div class="entry-last-logged">${lastText}</div>
+          ${inactiveHtml}
+          ${rivalHtml}
         </div>
         <div class="entry-days">
-          <div class="days-count">${m.days}</div>
-          <span class="days-unit">days</span>
+          <div class="days-count">${score}</div>
+          <span class="days-unit">${currentTab === 'week' ? 'this wk' : 'days'}</span>
         </div>
         ${controlsHtml}
       `;
-      board.appendChild(el);
+      entriesContainer.appendChild(el);
     });
-  }
+  });
 
-  // Active bar
+  updateActiveBar(isAdmin);
+}
+
+function updateActiveBar(isAdmin) {
   const bar = document.getElementById('activeBar');
   if (activeUser) {
     bar.classList.add('visible');
@@ -678,21 +739,44 @@ function renderBoard(members) {
   }
 }
 
-// ── Add day ───────────────────────────────────────────────────────
+// ── Add day ───────────────────────────────────────────
 async function addDay(id) {
   const isAdmin = activeUser?.is_admin;
   if (!activeUser) return;
   if (!isAdmin && activeUser.id !== id) return;
   showLoading(true);
   try {
-    const current = await getCurrentDays(id);
+    const rows = await sbFetch(`members?id=eq.${id}&select=days,last_logged,streak,pb_streak,weekly_days,week_start`);
+    const m = rows?.[0];
+    const current = m?.days ?? 0;
     const patch = { days: current + 1 };
-    // Only stamp last_logged if not admin (admin edits don't affect the daily log)
-    if (!isAdmin) patch.last_logged = todayISO();
+
+    if (!isAdmin) {
+      const today = todayISO();
+      const weekStart = getWeekStart();
+      patch.last_logged = today;
+
+      // Streak
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayISO = yesterday.toISOString().split('T')[0];
+      const newStreak = m?.last_logged === yesterdayISO ? (m.streak ?? 1) + 1 : 1;
+      patch.streak = newStreak;
+
+      // PB streak
+      patch.pb_streak = Math.max(newStreak, m?.pb_streak ?? 0);
+
+      // Weekly days — reset if new week
+      if (m?.week_start === weekStart) {
+        patch.weekly_days = (m.weekly_days ?? 0) + 1;
+      } else {
+        patch.weekly_days = 1;
+        patch.week_start = weekStart;
+      }
+    }
+
     await sbFetch(`members?id=eq.${id}`, {
-      method: 'PATCH',
-      prefer: 'return=minimal',
-      body: JSON.stringify(patch)
+      method: 'PATCH', prefer: 'return=minimal', body: JSON.stringify(patch)
     });
     if (!isAdmin) setStatus('Session logged! 💪', 'success');
     await loadAndRender();
@@ -702,25 +786,28 @@ async function addDay(id) {
   }
 }
 
-// ── Sub day ───────────────────────────────────────────────────────
+// ── Sub day ───────────────────────────────────────────
 async function subDay(id) {
   const isAdmin = activeUser?.is_admin;
   if (!activeUser) return;
   if (!isAdmin && activeUser.id !== id) return;
   showLoading(true);
   try {
-    const current = await getCurrentDays(id);
+    const rows = await sbFetch(`members?id=eq.${id}&select=days,last_logged,weekly_days,week_start`);
+    const m = rows?.[0];
+    const current = m?.days ?? 0;
     if (current <= 0) { showLoading(false); return; }
     const patch = { days: current - 1 };
-    // If non-admin subs and had logged today, clear it so they can re-add
-    if (!isAdmin) {
-      const rows = await sbFetch(`members?id=eq.${id}&select=last_logged`);
-      if (rows?.[0]?.last_logged === todayISO()) patch.last_logged = null;
+    if (!isAdmin && m?.last_logged === todayISO()) {
+      patch.last_logged = null;
+      // Also decrement weekly
+      const weekStart = getWeekStart();
+      if (m?.week_start === weekStart && (m.weekly_days ?? 0) > 0) {
+        patch.weekly_days = m.weekly_days - 1;
+      }
     }
     await sbFetch(`members?id=eq.${id}`, {
-      method: 'PATCH',
-      prefer: 'return=minimal',
-      body: JSON.stringify(patch)
+      method: 'PATCH', prefer: 'return=minimal', body: JSON.stringify(patch)
     });
     await loadAndRender();
   } catch(e) {
@@ -734,13 +821,56 @@ async function getCurrentDays(id) {
   return rows?.[0]?.days ?? 0;
 }
 
-// ── Add member ────────────────────────────────────────────────────
+// ── Icon picker ───────────────────────────────────────
+let selectedSignupIcon = null;
+let selectedModalIcon  = null;
+
+function renderIconGrid(containerId, stateKey, currentIcon) {
+  const grid = document.getElementById(containerId);
+  grid.innerHTML = '';
+  GYM_ICONS.forEach(icon => {
+    const btn = document.createElement('button');
+    btn.className = 'icon-opt' + (icon === currentIcon ? ' selected' : '');
+    btn.textContent = icon;
+    btn.onclick = () => {
+      grid.querySelectorAll('.icon-opt').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      if (stateKey === 'signup') selectedSignupIcon = icon;
+      else selectedModalIcon = icon;
+    };
+    grid.appendChild(btn);
+  });
+  if (stateKey === 'signup') selectedSignupIcon = currentIcon || null;
+  else selectedModalIcon = currentIcon || null;
+}
+
+function openIconModal(currentIcon) {
+  renderIconGrid('iconModalGrid', 'modal', currentIcon);
+  document.getElementById('iconModal').classList.add('open');
+}
+function closeIconModal() { document.getElementById('iconModal').classList.remove('open'); }
+
+async function saveIcon() {
+  if (!activeUser || !selectedModalIcon) { closeIconModal(); return; }
+  try {
+    await sbFetch(`members?id=eq.${activeUser.id}`, {
+      method: 'PATCH', prefer: 'return=minimal',
+      body: JSON.stringify({ icon: selectedModalIcon })
+    });
+    closeIconModal();
+    await loadAndRender();
+  } catch(e) {
+    setStatus('Failed to save icon', 'error');
+  }
+}
+
+// ── Add member ────────────────────────────────────────
 async function addMember() {
   const nameInput = document.getElementById('newName');
   const pinInput  = document.getElementById('newPin');
+  const daysInput = document.getElementById('newDays');
   const name = nameInput.value.trim();
   const pin  = pinInput.value.trim();
-  const daysInput = document.getElementById('newDays');
   const startDays = Math.max(0, parseInt(daysInput.value) || 0);
 
   if (!name) { nameInput.focus(); return; }
@@ -758,13 +888,14 @@ async function addMember() {
   try {
     const pinHash = await sha256(pin);
     await sbFetch('members', {
-      method: 'POST',
-      prefer: 'return=minimal',
-      body: JSON.stringify({ name: name.toUpperCase(), pin_hash: pinHash, days: startDays, is_admin: false })
+      method: 'POST', prefer: 'return=minimal',
+      body: JSON.stringify({ name: name.toUpperCase(), pin_hash: pinHash, days: startDays, is_admin: false, icon: selectedSignupIcon })
     });
     nameInput.value = '';
     pinInput.value  = '';
     daysInput.value = '';
+    selectedSignupIcon = null;
+    renderIconGrid('signupIconGrid', 'signup', null);
     setStatus(`${name.toUpperCase()} joined with ${startDays} day${startDays !== 1 ? 's' : ''}!`, 'success');
     await loadAndRender();
   } catch(e) {
@@ -776,7 +907,7 @@ async function addMember() {
   }
 }
 
-// ── PIN modal ─────────────────────────────────────────────────────
+// ── PIN modal ─────────────────────────────────────────
 let pinTarget = null;
 let pinBuffer = '';
 
@@ -819,7 +950,7 @@ async function submitPin() {
   showLoading(true);
   try {
     const hash = await sha256(pinBuffer);
-    const rows = await sbFetch(`members?id=eq.${pinTarget.id}&select=id,name,pin_hash,is_admin`);
+    const rows = await sbFetch(`members?id=eq.${pinTarget.id}&select=id,name,pin_hash,icon,is_admin`);
     const member = rows?.[0];
     if (!member || member.pin_hash !== hash) {
       document.getElementById('pinError').textContent = 'Incorrect PIN';
@@ -828,10 +959,12 @@ async function submitPin() {
       showLoading(false);
       return;
     }
-    activeUser = { id: member.id, name: member.name, is_admin: member.is_admin };
+    activeUser = { id: member.id, name: member.name, is_admin: member.is_admin, icon: member.icon };
     closePinModal();
     setStatus(`Signed in as ${member.name}`, 'success');
     await loadAndRender();
+    // Prompt icon picker if they don't have one yet
+    if (!member.icon && !member.is_admin) openIconModal(null);
   } catch(e) {
     document.getElementById('pinError').textContent = 'Error — try again';
     pinBuffer = '';
@@ -840,9 +973,9 @@ async function submitPin() {
   }
 }
 
-// ── Admin login ───────────────────────────────────────────────────
+// ── Admin login ───────────────────────────────────────
 async function openAdminLogin() {
-  if (activeUser?.is_admin) return; // already in
+  if (activeUser?.is_admin) return;
   showLoading(true);
   try {
     const rows = await sbFetch('members?is_admin=eq.true&select=id,name&limit=1');
@@ -855,6 +988,11 @@ async function openAdminLogin() {
   }
 }
 
+function changeIcon() {
+  if (!activeUser) return;
+  openIconModal(activeUser.icon || null);
+}
+
 function logout() {
   activeUser = null;
   document.getElementById('adminPanel').classList.remove('visible');
@@ -862,7 +1000,7 @@ function logout() {
   loadAndRender();
 }
 
-// ── Reset ─────────────────────────────────────────────────────────
+// ── Reset ─────────────────────────────────────────────
 function openResetModal()  { document.getElementById('resetModal').classList.add('open'); }
 function closeResetModal() { document.getElementById('resetModal').classList.remove('open'); }
 
@@ -870,11 +1008,9 @@ async function confirmReset() {
   closeResetModal();
   showLoading(true);
   try {
-    // Reset all non-admin members
     await sbFetch('members?is_admin=eq.false', {
-      method: 'PATCH',
-      prefer: 'return=minimal',
-      body: JSON.stringify({ days: 0, last_logged: null })
+      method: 'PATCH', prefer: 'return=minimal',
+      body: JSON.stringify({ days: 0, last_logged: null, streak: 0, pb_streak: 0, weekly_days: 0, week_start: null })
     });
     setStatus('Season reset — everyone back to zero', 'success');
     await loadAndRender();
@@ -884,7 +1020,7 @@ async function confirmReset() {
   }
 }
 
-// ── Keyboard shortcuts ────────────────────────────────────────────
+// ── Keyboard ──────────────────────────────────────────
 document.getElementById('newName').addEventListener('keydown', e => { if (e.key === 'Enter') addMember(); });
 document.getElementById('newPin').addEventListener('keydown',  e => { if (e.key === 'Enter') addMember(); });
 document.addEventListener('keydown', e => {
@@ -896,10 +1032,10 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeResetModal();
 });
 
-// ── Init ──────────────────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────
+renderIconGrid('signupIconGrid', 'signup', null);
 updateCountdown();
 setInterval(updateCountdown, 1000);
-// Poll for updates every 30s so everyone sees live scores
 setInterval(loadAndRender, 30000);
 loadAndRender();
 </script>
