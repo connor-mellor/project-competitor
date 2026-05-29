@@ -143,8 +143,8 @@
   .entry {
     background: var(--surface); border: 1px solid var(--border);
     display: grid; grid-template-columns: 3rem 1fr auto auto;
-    align-items: center; gap: 1rem; padding: 0.85rem 1rem;
-    transition: all 0.3s ease; position: relative; overflow: hidden;
+    align-items: start; gap: 1rem; padding: 0.85rem 1rem;
+    transition: all 0.3s ease; position: relative;
     animation: slideIn 0.4s ease both;
   }
   @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
@@ -155,10 +155,12 @@
   .entry.is-active { border-color: var(--green); }
   .entry.inactive-warning { border-left: 3px solid var(--accent); opacity: 0.7; }
 
-  .entry-rank { font-family: 'Black Ops One', cursive; font-size: 1.4rem; text-align: center; color: var(--muted); }
+  .entry-rank { font-family: 'Black Ops One', cursive; font-size: 1.4rem; text-align: center; color: var(--muted); padding-top: 0.25rem; }
   .entry.rank-1 .entry-rank { color: var(--gold); }
   .entry.rank-2 .entry-rank { color: var(--silver); }
   .entry.rank-3 .entry-rank { color: var(--bronze); }
+
+  .entry-controls { display: flex; flex-direction: column; gap: 0.3rem; padding-top: 0.1rem; }
 
   .entry-info { min-width: 0; }
   .entry-name { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -170,7 +172,6 @@
   .days-count { font-family: 'Black Ops One', cursive; font-size: 1.8rem; line-height: 1; color: var(--green); }
   .days-unit { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); display: block; }
 
-  .entry-controls { display: flex; flex-direction: column; gap: 0.3rem; }
   .btn-control {
     width: 2rem; height: 2rem; border: 1px solid var(--border); background: var(--rank-bg);
     color: var(--text); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center;
@@ -181,7 +182,7 @@
   .btn-control:disabled { opacity: 0.2; cursor: not-allowed; }
 
   .btn-lock {
-    width: 2rem; height: 4.3rem; border: 1px solid var(--border); background: var(--rank-bg);
+    width: 2rem; height: auto; min-height: 4rem; border: 1px solid var(--border); background: var(--rank-bg);
     color: var(--muted); font-size: 1rem; cursor: pointer; display: flex; align-items: center;
     justify-content: center; transition: all 0.15s ease;
   }
@@ -656,7 +657,7 @@ function renderBoard(members) {
       const isInactive = daysSinceLast > 3 && m.days > 0;
 
       // Last logged text
-      let lastText = '';
+      let lastText = 'No sessions yet';
       if (m.last_logged) {
         if (loggedToday) {
           lastText = 'Logged today ✓';
