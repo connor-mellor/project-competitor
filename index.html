@@ -20,6 +20,8 @@
     --green: #39d353;
     --rank-bg: #161616;
     --orange: #ffa000;
+    --blue: #4da6ff;
+    --purple: #b06bff;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -38,10 +40,10 @@
     inset: 0;
     background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
     pointer-events: none;
-    z-index: 100;
+    z-index: 1;
   }
 
-  .container { max-width: 700px; margin: 0 auto; padding: 0 1rem 4rem; }
+  .container { max-width: 700px; margin: 0 auto; padding: 0 1rem 4rem; position: relative; z-index: 2; }
 
   /* HEADER */
   header { padding: 2.5rem 0 1rem; text-align: center; }
@@ -109,51 +111,38 @@
   .countdown-time { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--muted); letter-spacing: 0.15em; margin-top: 0.15rem; }
 
   /* TABS */
-  .tabs {
-    display: flex;
-    gap: 0;
-    margin-bottom: 0.75rem;
-    border: 1px solid var(--border);
-  }
+  .tabs { display: flex; gap: 0; margin-bottom: 0.75rem; border: 1px solid var(--border); }
   .tab {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: var(--muted);
-    padding: 0.65rem 1rem;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.15s;
-    border-right: 1px solid var(--border);
+    flex: 1; background: transparent; border: none; color: var(--muted);
+    padding: 0.65rem 1rem; font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    cursor: pointer; transition: all 0.15s; border-right: 1px solid var(--border);
   }
   .tab:last-child { border-right: none; }
   .tab:hover { color: var(--text); background: var(--surface2); }
   .tab.active { background: var(--surface); color: var(--gold); border-bottom: 2px solid var(--gold); }
 
   /* BOARD */
-  .board { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem; max-height: 60vh; overflow-y: auto; padding-right: 2px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
-  .board::-webkit-scrollbar { width: 4px; }
-  .board::-webkit-scrollbar-track { background: transparent; }
-  .board::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .board { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem; }
 
   .entry {
     background: var(--surface); border: 1px solid var(--border);
-    display: grid; grid-template-columns: 3rem 1fr auto auto;
-    align-items: start; gap: 1rem; padding: 0.85rem 1rem;
     transition: all 0.3s ease; position: relative;
     animation: slideIn 0.4s ease both;
   }
   @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-  .entry:hover { border-color: #333; background: var(--surface2); }
+  .entry:hover { border-color: #333; }
   .entry.rank-1 { border-left: 3px solid var(--gold); }
   .entry.rank-2 { border-left: 3px solid var(--silver); }
   .entry.rank-3 { border-left: 3px solid var(--bronze); }
   .entry.is-active { border-color: var(--green); }
   .entry.inactive-warning { border-left: 3px solid var(--accent); opacity: 0.7; }
+
+  /* ENTRY MAIN ROW */
+  .entry-main {
+    display: grid; grid-template-columns: 3rem 1fr auto auto;
+    align-items: start; gap: 1rem; padding: 0.85rem 1rem;
+  }
 
   .entry-rank { font-family: 'Black Ops One', cursive; font-size: 1.4rem; text-align: center; color: var(--muted); padding-top: 0.25rem; }
   .entry.rank-1 .entry-rank { color: var(--gold); }
@@ -163,7 +152,8 @@
   .entry-controls { display: flex; flex-direction: column; gap: 0.3rem; padding-top: 0.1rem; }
 
   .entry-info { min-width: 0; }
-  .entry-name { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .entry-name { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+  .entry-name:hover { color: var(--gold); }
   .entry-tagline { font-size: 0.75rem; color: var(--muted); margin-top: 0.1rem; letter-spacing: 0.05em; font-style: italic; }
   .entry-last-logged { font-size: 0.8rem; color: var(--muted); margin-top: 0.15rem; letter-spacing: 0.08em; }
   .entry-inactive { font-size: 0.75rem; color: var(--accent); margin-top: 0.1rem; letter-spacing: 0.08em; }
@@ -195,7 +185,6 @@
 
   /* BADGES ROW */
   .entry-badges { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.25rem; }
-
   .streak-badge {
     display: inline-flex; align-items: center; gap: 0.2rem;
     background: rgba(255,160,0,0.12); border: 1px solid rgba(255,160,0,0.35);
@@ -208,6 +197,114 @@
     color: var(--gold); font-size: 0.72rem; font-weight: 700;
     letter-spacing: 0.08em; text-transform: uppercase; padding: 0.15rem 0.45rem;
   }
+  .shame-badge {
+    display: inline-flex; align-items: center; gap: 0.2rem;
+    background: rgba(255,60,60,0.1); border: 1px solid rgba(255,60,60,0.3);
+    color: var(--accent); font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 0.15rem 0.45rem;
+  }
+  .type-badge {
+    display: inline-flex; align-items: center; gap: 0.2rem;
+    background: rgba(77,166,255,0.08); border: 1px solid rgba(77,166,255,0.25);
+    color: var(--blue); font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 0.15rem 0.45rem;
+  }
+  .milestone-badge {
+    display: inline-flex; align-items: center; gap: 0.2rem;
+    background: rgba(176,107,255,0.1); border: 1px solid rgba(176,107,255,0.3);
+    color: var(--purple); font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 0.15rem 0.45rem;
+  }
+
+  /* TODAY SESSION */
+  .entry-today-session { font-size: 0.78rem; margin-top: 0.2rem; display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.25rem; }
+  .today-session-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .today-session-type { color: var(--blue); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+  .today-session-note { color: var(--silver); font-style: italic; opacity: 0.85; }
+
+  /* SESSION NOTE */
+  .entry-note {
+    font-size: 0.75rem; color: var(--silver); margin-top: 0.2rem;
+    letter-spacing: 0.05em; font-style: italic; opacity: 0.8;
+  }
+
+  /* TRASH TALK */
+  .entry-trash {
+    font-size: 0.75rem; color: var(--orange); margin-top: 0.15rem;
+    letter-spacing: 0.05em; font-style: italic; animation: fadeInUp 0.4s ease;
+  }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* REACTIONS ROW */
+  .reactions-row {
+    display: flex; flex-wrap: wrap; gap: 0.3rem; padding: 0.5rem 1rem 0.5rem calc(3rem + 1rem + 1rem);
+    border-top: 1px solid var(--border); background: rgba(255,255,255,0.01);
+    align-items: center;
+  }
+  .reaction-chip {
+    display: inline-flex; align-items: center; gap: 0.25rem;
+    background: var(--rank-bg); border: 1px solid var(--border);
+    padding: 0.2rem 0.5rem; font-size: 0.85rem; cursor: pointer;
+    transition: all 0.15s; border-radius: 2px; color: var(--muted); font-weight: 700;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 0.05em;
+  }
+  .reaction-chip:hover { border-color: var(--gold); color: var(--text); transform: scale(1.08); }
+  .reaction-chip.mine { border-color: var(--gold); color: var(--gold); background: rgba(245,200,66,0.08); }
+  .reaction-chip .count { font-size: 0.7rem; }
+  .btn-add-reaction {
+    background: transparent; border: 1px dashed var(--border); color: var(--muted);
+    padding: 0.2rem 0.5rem; font-size: 0.8rem; cursor: pointer; transition: all 0.15s;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+  .btn-add-reaction:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* REACTION PICKER POPUP */
+  .reaction-picker {
+    position: absolute; bottom: 100%; left: 0; z-index: 50;
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 0.5rem; display: flex; gap: 0.3rem; flex-wrap: wrap;
+    max-width: 200px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    animation: popIn 0.15s ease;
+  }
+  @keyframes popIn { from { opacity: 0; transform: scale(0.9) translateY(4px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .reaction-emoji-btn {
+    font-size: 1.3rem; background: none; border: none; cursor: pointer;
+    padding: 0.2rem; border-radius: 2px; transition: transform 0.1s;
+  }
+  .reaction-emoji-btn:hover { transform: scale(1.3); }
+
+  /* EXPAND SECTION (heatmap) */
+  .entry-expand { border-top: 1px solid var(--border); overflow: hidden; max-height: 0; transition: max-height 0.35s ease; }
+  .entry-expand.open { max-height: 700px; }
+  .heatmap-wrap { padding: 1rem 1rem 1rem calc(3rem + 1rem + 1rem); }
+  .heatmap-title { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+  .heatmap-grid { display: flex; gap: 3px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+  .heatmap-grid::-webkit-scrollbar { display: none; }
+  .heatmap-col { display: flex; flex-direction: column; gap: 3px; }
+  .heatmap-cell {
+    width: 100%; aspect-ratio: 1; border-radius: 2px; background: var(--rank-bg);
+    transition: background 0.15s; cursor: default; position: relative;
+  }
+  .heatmap-cell.level-1 { background: rgba(57,211,83,0.25); }
+  .heatmap-cell.level-2 { background: rgba(57,211,83,0.55); }
+  .heatmap-cell.level-3 { background: rgba(57,211,83,0.8); }
+  .heatmap-cell.today { outline: 1px solid var(--gold); }
+  .heatmap-months { display: flex; gap: 3px; margin-bottom: 2px; overflow-x: auto; scrollbar-width: none; padding-left: 0; }
+  .heatmap-month-label { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
+  .heatmap-stats { display: flex; gap: 1.5rem; margin-top: 0.6rem; }
+  .heatmap-stat { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .heatmap-stat strong { color: var(--text); }
+  .session-history { margin-top: 0.75rem; }
+  .session-history-title { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+  .session-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.3rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.78rem; }
+  .session-item:last-child { border-bottom: none; }
+  .session-date { color: var(--muted); min-width: 5rem; }
+  .session-type-tag { font-size: 0.65rem; padding: 0.1rem 0.35rem; border: 1px solid; border-radius: 1px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .session-type-tag.weights { color: var(--orange); border-color: rgba(255,160,0,0.35); }
+  .session-type-tag.cardio { color: var(--blue); border-color: rgba(77,166,255,0.35); }
+  .session-type-tag.sport { color: var(--green); border-color: rgba(57,211,83,0.35); }
+  .session-type-tag.other { color: var(--muted); border-color: var(--border); }
+  .session-note-text { color: var(--silver); font-style: italic; opacity: 0.8; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
   /* RIVAL */
   .rival-group { display: flex; gap: 0; }
@@ -279,10 +376,13 @@
   @keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.04); } 100% { transform: scale(1); } }
   .bump { animation: bump 0.3s ease; }
 
+  /* CONFETTI CANVAS */
+  #confettiCanvas { position: fixed; inset: 0; pointer-events: none; z-index: 400; }
+
   /* MODALS */
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; }
   .modal-overlay.open { display: flex; }
-  .modal { background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--gold); padding: 2rem; max-width: 360px; width: 90%; text-align: center; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--gold); padding: 2rem; max-width: 380px; width: 90%; text-align: center; }
   .modal.danger { border-top-color: var(--accent); }
   .modal h2 { font-family: 'Black Ops One', cursive; font-size: 1.5rem; margin-bottom: 0.4rem; }
   .modal h2.gold { color: var(--gold); }
@@ -302,6 +402,28 @@
   .btn-confirm { background: var(--accent); color: #fff; border: none; padding: 0.6rem 1.5rem; font-family: 'Black Ops One', cursive; font-size: 0.9rem; cursor: pointer; letter-spacing: 0.05em; }
   .btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 0.6rem 1.25rem; font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; letter-spacing: 0.1em; }
 
+  /* LOG SESSION MODAL */
+  .session-type-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
+  .session-type-btn {
+    background: var(--rank-bg); border: 2px solid var(--border); color: var(--muted);
+    padding: 0.75rem 0.5rem; font-family: 'Black Ops One', cursive; font-size: 0.9rem;
+    cursor: pointer; transition: all 0.15s; letter-spacing: 0.05em;
+  }
+  .session-type-btn:hover { border-color: #444; color: var(--text); }
+  .session-type-btn.selected-weights { border-color: var(--orange); color: var(--orange); background: rgba(255,160,0,0.08); }
+  .session-type-btn.selected-cardio  { border-color: var(--blue);   color: var(--blue);   background: rgba(77,166,255,0.08); }
+  .session-type-btn.selected-sport   { border-color: var(--green);  color: var(--green);  background: rgba(57,211,83,0.08); }
+  .session-type-btn.selected-other   { border-color: var(--muted);  color: var(--text);   background: rgba(255,255,255,0.05); }
+  .note-input {
+    width: 100%; background: var(--rank-bg); border: 1px solid var(--border); color: var(--text);
+    padding: 0.6rem 0.85rem; font-family: 'Barlow Condensed', sans-serif; font-size: 0.95rem;
+    outline: none; transition: border-color 0.2s; margin-bottom: 1rem; resize: none;
+  }
+  .note-input:focus { border-color: var(--gold); }
+  .note-input::placeholder { color: var(--muted); font-style: italic; }
+  .btn-log { background: var(--green); color: #000; border: none; padding: 0.6rem 1.5rem; font-family: 'Black Ops One', cursive; font-size: 0.9rem; cursor: pointer; letter-spacing: 0.05em; }
+  .btn-log:hover { background: #50e86a; }
+
   /* ICON PICKER */
   .icon-picker { margin-top: 0.75rem; }
   .icon-picker-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
@@ -314,14 +436,13 @@
   }
   .icon-opt:hover { border-color: var(--gold); transform: scale(1.1); }
   .icon-opt.selected { border-color: var(--gold); background: rgba(245,200,66,0.15); }
-
   .entry-icon { font-size: 1.3rem; line-height: 1; margin-bottom: 0.1rem; }
 
   footer { text-align: center; color: var(--muted); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding-top: 2rem; }
 </style>
 </head>
 <body>
-
+<canvas id="confettiCanvas"></canvas>
 <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
 
 <div class="container">
@@ -338,8 +459,8 @@
       <div class="active-name" id="activeBarName">—</div>
     </div>
     <div style="display:flex;gap:0.5rem;">
-      <button class="btn-logout" onclick="changeIcon()">Change Icon</button>
-      <button class="btn-logout" onclick="logout()">Switch user</button>
+      <button class="btn-logout" onclick="changeIcon()">Icon</button>
+      <button class="btn-logout" onclick="logout()">Logout</button>
     </div>
   </div>
 
@@ -380,6 +501,7 @@
 
   <div class="admin-panel" id="adminPanel">
     <div class="admin-panel-label">Admin Controls</div>
+    <button class="btn-reset" onclick="seedTestData()" style="border-color:var(--blue);color:var(--blue);">Seed Test Data</button>
     <button class="btn-reset" onclick="openResetModal()">Reset Season</button>
   </div>
 
@@ -417,6 +539,25 @@
   </div>
 </div>
 
+<!-- Log Session Modal -->
+<div class="modal-overlay" id="logModal">
+  <div class="modal">
+    <h2 class="gold">LOG SESSION</h2>
+    <p style="margin-bottom:0.75rem;">What did you do today?</p>
+    <div class="session-type-grid">
+      <button class="session-type-btn" id="typeWeights" onclick="selectType('weights')">🏋️ Weights</button>
+      <button class="session-type-btn" id="typeCardio"  onclick="selectType('cardio')">🏃 Cardio</button>
+      <button class="session-type-btn" id="typeSport"   onclick="selectType('sport')">⚽ Sport</button>
+      <button class="session-type-btn" id="typeOther"   onclick="selectType('other')">✦ Other</button>
+    </div>
+    <textarea class="note-input" id="sessionNote" rows="2" placeholder="Add a note (optional) — e.g. 5k PB, leg day, boxing class..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeLogModal()">Cancel</button>
+      <button class="btn-log" onclick="submitLogSession()">Log It</button>
+    </div>
+  </div>
+</div>
+
 <!-- Reset confirm modal -->
 <div class="modal-overlay" id="resetModal">
   <div class="modal danger">
@@ -429,7 +570,7 @@
   </div>
 </div>
 
-<!-- Icon picker modal (post-login) -->
+<!-- Icon picker modal -->
 <div class="modal-overlay" id="iconModal">
   <div class="modal">
     <h2 class="gold">YOUR ICON</h2>
@@ -444,19 +585,28 @@
 
 <script>
 // ═══════════════════════════════════════════════════════
-//  CONFIG
+//  CONFIG — swap in your own keys
 // ═══════════════════════════════════════════════════════
 const SUPABASE_URL  = 'https://qhwqkvavjfixmkxtyoty.supabase.co';
 const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFod3FrdmF2amZpeG1reHR5b3R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5OTE3NTksImV4cCI6MjA5NTU2Nzc1OX0.bYqrBTAOrs7vLhPGmrhy8o5qvnwFVf9mGvZcgcRJHhw';
+const ANTHROPIC_KEY = ''; // Optional: fill in for AI trash talk
 // ═══════════════════════════════════════════════════════
 
 const RESET_DATE = new Date('2026-06-29T00:00:00');
+const GYM_ICONS  = ['💪','🏋️','🥊','🔥','⚡','🏃','🎯','🦁','💀','🐺','🤖','⚔️','🏅','💎','🧱','🩸'];
+const REACTION_EMOJIS = ['🔥','💪','👑','😤','💀','⚡','🫡','🤣'];
+const MILESTONES = [7, 14, 21, 30, 50, 75, 100];
+const SESSION_TYPES = { weights: '🏋️', cardio: '🏃', sport: '⚽', other: '✦' };
 
-const GYM_ICONS = ['💪','🏋️','🥊','🔥','⚡','🏃','🎯','🦁','💀','🐺','🤖','⚔️','🏅','💎','🧱','🩸'];
-
-let activeUser = null;
-let currentTab = 'all';
+let activeUser   = null;
+let currentTab   = 'all';
 let cachedMembers = [];
+let cachedSessions = {};   // { memberId: [sessions...] }
+let cachedReactions = {};  // { memberId: [reactions...] }
+let expandedEntries = new Set();
+let pendingLogTarget = null;
+let selectedSessionType = null;
+let pendingTrashTalk = {}; // { memberId: text }
 
 // ── Helpers ───────────────────────────────────────────
 async function sha256(str) {
@@ -468,17 +618,12 @@ async function sbFetch(path, opts = {}) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     ...opts,
     headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': opts.prefer || '',
+      'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json', 'Prefer': opts.prefer || '',
       ...(opts.headers || {})
     }
   });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || `HTTP ${res.status}`);
-  }
+  if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.message || `HTTP ${res.status}`); }
   const text = await res.text();
   return text ? JSON.parse(text) : null;
 }
@@ -487,28 +632,33 @@ function todayISO() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
-
 function hasLoggedToday(member) { return member.last_logged === todayISO(); }
-
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function showLoading(v) { document.getElementById('loadingOverlay').classList.toggle('visible', v); }
-
 function setStatus(msg, type = 'info') {
   const el = document.getElementById('status');
   el.innerHTML = msg ? `<span class="status-msg ${type}">${msg}</span>` : '';
-  if (msg) setTimeout(() => { if (el.querySelector('.status-msg')?.textContent === msg) el.innerHTML = ''; }, 3000);
+  if (msg) setTimeout(() => { if (el.querySelector('.status-msg')?.textContent === msg) el.innerHTML = ''; }, 3500);
 }
 
-// ── Week helpers ──────────────────────────────────────
 function getWeekStart() {
-  const d = new Date();
-  const day = d.getDay(); // 0=Sun
-  const monday = new Date(d);
-  monday.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
-  return `${monday.getFullYear()}-${String(monday.getMonth()+1).padStart(2,'0')}-${String(monday.getDate()).padStart(2,'0')}`;
+  const d = new Date(), day = d.getDay();
+  const mon = new Date(d);
+  mon.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+  return `${mon.getFullYear()}-${String(mon.getMonth()+1).padStart(2,'0')}-${String(mon.getDate()).padStart(2,'0')}`;
+}
+
+// ── Missed-day streak ─────────────────────────────────
+function missedDayStreak(member) {
+  if (!member.last_logged) return 0;
+  const last = new Date(member.last_logged + 'T12:00:00');
+  const days = Math.floor((new Date() - last) / 86400000);
+  return days > 1 ? days - 1 : 0;  // days since last log minus today
+}
+
+// ── Milestone ─────────────────────────────────────────
+function getMilestone(days) {
+  return MILESTONES.find(m => m === days) || null;
 }
 
 // ── Taglines ──────────────────────────────────────────
@@ -526,8 +676,7 @@ function getTagline(member, rank, total, daysSinceLast) {
 
 // ── Countdown ─────────────────────────────────────────
 function updateCountdown() {
-  const now  = new Date();
-  const diff = RESET_DATE - now;
+  const now = new Date(), diff = RESET_DATE - now;
   document.getElementById('resetDateDisplay').textContent =
     RESET_DATE.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' }).toUpperCase();
   if (diff <= 0) {
@@ -537,14 +686,14 @@ function updateCountdown() {
     return;
   }
   const totalSecs = Math.floor(diff / 1000);
-  const days  = Math.floor(totalSecs / 86400);
-  const hours = Math.floor((totalSecs % 86400) / 3600);
-  const mins  = Math.floor((totalSecs % 3600) / 60);
-  const secs  = totalSecs % 60;
+  const days = Math.floor(totalSecs / 86400);
+  const h = Math.floor((totalSecs % 86400) / 3600);
+  const m = Math.floor((totalSecs % 3600) / 60);
+  const s = totalSecs % 60;
   document.getElementById('daysLeft').textContent = days;
   document.getElementById('daysLabel').textContent = days === 1 ? 'Day Left' : 'Days Left';
   document.getElementById('countdownTime').textContent =
-    `${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
 
 // ── Tab switching ─────────────────────────────────────
@@ -559,7 +708,26 @@ function switchTab(tab) {
 async function loadAndRender() {
   showLoading(true);
   try {
-    const members = await sbFetch('members?order=days.desc,name.asc&select=id,name,days,last_logged,streak,pb_streak,weekly_days,week_start,icon,is_admin');
+    const [members, sessions, reactions] = await Promise.all([
+      sbFetch('members?order=days.desc,name.asc&select=id,name,days,last_logged,streak,pb_streak,weekly_days,week_start,icon,is_admin,missed_streak'),
+      sbFetch('sessions?order=logged_at.desc&select=id,member_id,type,note,logged_at').catch(() => []),
+      sbFetch('reactions?select=id,member_id,reactor_id,emoji').catch(() => [])
+    ]);
+
+    // Build session lookup
+    cachedSessions = {};
+    (sessions || []).forEach(s => {
+      if (!cachedSessions[s.member_id]) cachedSessions[s.member_id] = [];
+      cachedSessions[s.member_id].push(s);
+    });
+
+    // Build reaction lookup grouped by member
+    cachedReactions = {};
+    (reactions || []).forEach(r => {
+      if (!cachedReactions[r.member_id]) cachedReactions[r.member_id] = [];
+      cachedReactions[r.member_id].push(r);
+    });
+
     cachedMembers = members;
     renderBoard(members);
   } catch(e) {
@@ -573,15 +741,11 @@ function renderBoard(members) {
   const board = document.getElementById('board');
   const isAdmin = activeUser?.is_admin;
   const weekStart = getWeekStart();
-
   const competitors = members.filter(m => !m.is_admin);
 
-  // Collective stat
   const totalDays = competitors.reduce((s, m) => s + (m.days || 0), 0);
   document.getElementById('collectiveStat').innerHTML =
-    totalDays > 0
-      ? `<strong>${totalDays}</strong> days logged collectively this season`
-      : '';
+    totalDays > 0 ? `<strong>${totalDays}</strong> days logged collectively this season` : '';
 
   if (competitors.length === 0) {
     board.innerHTML = '<div class="empty">No competitors yet — be the first to join</div>';
@@ -589,7 +753,6 @@ function renderBoard(members) {
     return;
   }
 
-  // Sort by tab
   let sorted;
   if (currentTab === 'week') {
     sorted = [...competitors].sort((a, b) => {
@@ -605,21 +768,16 @@ function renderBoard(members) {
     ? m => m.week_start === weekStart ? (m.weekly_days || 0) : 0
     : m => m.days;
 
-  // Assign ranks
   let rank = 1;
   sorted.forEach((m, i) => {
     if (i > 0 && scoreKey(m) < scoreKey(sorted[i - 1])) rank = i + 1;
     m._rank = rank;
   });
 
-  // Group ties
   const groups = [];
   sorted.forEach((m, i) => {
-    if (i === 0 || scoreKey(m) !== scoreKey(sorted[i - 1])) {
-      groups.push([m]);
-    } else {
-      groups[groups.length - 1].push(m);
-    }
+    if (i === 0 || scoreKey(m) !== scoreKey(sorted[i - 1])) groups.push([m]);
+    else groups[groups.length - 1].push(m);
   });
 
   board.innerHTML = '';
@@ -646,29 +804,23 @@ function renderBoard(members) {
       const isMe = activeUser && activeUser.id === m.id;
       const rivalNames = group.filter(r => r.id !== m.id).map(r => r.name);
       const score = scoreKey(m);
-
-      // Days since last logged
       let daysSinceLast = 999;
       if (m.last_logged) {
         const last = new Date(m.last_logged + 'T12:00:00');
         daysSinceLast = Math.floor((new Date() - last) / 86400000);
       }
-
       const isInactive = daysSinceLast > 3 && m.days > 0;
+      const missedDays = missedDayStreak(m);
+      const milestone = getMilestone(m.days);
+      const lastSession = (cachedSessions[m.id] || [])[0];
 
-      // Last logged text
       let lastText = 'No sessions yet';
       if (m.last_logged) {
-        if (loggedToday) {
-          lastText = 'Logged today ✓';
-        } else {
-          const dt = new Date(m.last_logged + 'T12:00:00');
-          lastText = `Last: ${dt.toLocaleDateString('en-GB', { day:'numeric', month:'short' })}`;
-        }
+        if (loggedToday) lastText = 'Logged today ✓';
+        else { const dt = new Date(m.last_logged + 'T12:00:00'); lastText = `Last: ${dt.toLocaleDateString('en-GB', { day:'numeric', month:'short' })}`; }
       }
 
       const tagline = getTagline(m, m._rank, sorted.length, daysSinceLast);
-
       const rankClass = m._rank <= 3 ? `rank-${m._rank}` : '';
       const el = document.createElement('div');
       el.className = `entry ${rankClass} ${isMe ? 'is-active' : ''} ${isInactive ? 'inactive-warning' : ''}`.trim();
@@ -676,72 +828,358 @@ function renderBoard(members) {
       el.style.animationDelay = `${gi * 0.05}s`;
 
       // Badges
-      const streakHtml = (m.streak && m.streak >= 2)
-        ? `<span class="streak-badge">🔥 ${m.streak} day streak</span>` : '';
-      const pbHtml = (m.pb_streak && m.pb_streak >= 2)
-        ? `<span class="pb-badge">🏅 PB ${m.pb_streak} days</span>` : '';
-      const badgesHtml = (streakHtml || pbHtml)
-        ? `<div class="entry-badges">${streakHtml}${pbHtml}</div>` : '';
+      const streakHtml  = (m.streak && m.streak >= 2) ? `<span class="streak-badge">🔥 ${m.streak} day streak</span>` : '';
+      const pbHtml       = (m.pb_streak && m.pb_streak >= 2) ? `<span class="pb-badge">🏅 PB ${m.pb_streak} days</span>` : '';
+      const shameHtml    = missedDays >= 2 ? `<span class="shame-badge">💤 ${missedDays} day skid</span>` : '';
+      const milestoneHtml = milestone ? `<span class="milestone-badge">🎉 ${milestone} day milestone!</span>` : '';
+      const badgesHtml   = (streakHtml || pbHtml || shameHtml || milestoneHtml)
+        ? `<div class="entry-badges">${streakHtml}${pbHtml}${shameHtml}${milestoneHtml}</div>` : '';
 
-      const rivalHtml = isTied
-        ? `<div class="rival-name">⚔ Rivals: <span>${rivalNames.map(escHtml).join(', ')}</span></div>` : '';
-
-      const inactiveHtml = isInactive
-        ? `<div class="entry-inactive">⚠ ${daysSinceLast} days since last session</div>` : '';
+      // Last logged session summary — shows most recent session with type/note if available
+      const todayType = lastSession?.type ? `${SESSION_TYPES[lastSession.type]} ${lastSession.type}` : null;
+      const todayNote = lastSession?.note && lastSession.note !== 'Test session 💪' ? lastSession.note : null;
+      const todaySessionHtml = lastSession
+        ? `<div class="entry-today-session"><span class="today-session-label">Last session:</span> ${todayType ? `<span class="today-session-type">${todayType}</span>` : '<span style="color:var(--muted)">—</span>'}${todayNote ? ` <span class="today-session-note">— "${escHtml(todayNote)}"</span>` : ''}</div>`
+        : '';
+      const trashHtml   = pendingTrashTalk[m.id] ? `<div class="entry-trash">${escHtml(pendingTrashTalk[m.id])}</div>` : '';
+      const rivalHtml   = isTied ? `<div class="rival-name">⚔ Rivals: <span>${rivalNames.map(escHtml).join(', ')}</span></div>` : '';
+      const inactiveHtml = isInactive ? `<div class="entry-inactive">⚠ ${daysSinceLast} days since last session</div>` : '';
 
       let controlsHtml;
       if (isAdmin) {
         controlsHtml = `<div class="entry-controls">
-          <button class="btn-control add" onclick="addDay('${m.id}')">+</button>
+          <button class="btn-control add" onclick="triggerLog('${m.id}')">+</button>
           <button class="btn-control sub" onclick="subDay('${m.id}')" ${m.days <= 0 ? 'disabled' : ''}>−</button>
         </div>`;
       } else if (isMe) {
         controlsHtml = `<div class="entry-controls">
-          <button class="btn-control add" onclick="addDay('${m.id}')" ${loggedToday ? 'disabled title="Already logged today"' : ''}>+</button>
+          <button class="btn-control add" onclick="triggerLog('${m.id}')" ${loggedToday ? 'disabled title="Already logged today"' : ''}>+</button>
           <button class="btn-control sub" onclick="subDay('${m.id}')" ${m.days <= 0 ? 'disabled' : ''}>−</button>
         </div>`;
       } else {
         controlsHtml = `<button class="btn-lock" onclick="openPinModal('${m.id}','${escHtml(m.name)}')" title="Sign in as ${escHtml(m.name)}">🔒</button>`;
       }
 
+      // Reactions
+      const reactionsHtml = buildReactionsHtml(m.id);
+
+      // Heatmap expand
+      const isExpanded = expandedEntries.has(m.id);
+
       el.innerHTML = `
         ${loggedToday ? '<span class="today-badge">Today ✓</span>' : ''}
-        <div class="entry-rank">${m._rank}</div>
-        <div class="entry-info">
-          <div class="entry-name">${m.icon ? `<span class="entry-icon">${m.icon}</span> ` : ''}${escHtml(m.name)}</div>
-          <div class="entry-tagline">${escHtml(tagline)}</div>
-          ${badgesHtml}
-          <div class="entry-last-logged">${lastText}</div>
-          ${inactiveHtml}
-          ${rivalHtml}
+        <div class="entry-main">
+          <div class="entry-rank">${m._rank}</div>
+          <div class="entry-info">
+            <div class="entry-name" onclick="toggleExpand('${m.id}')">${m.icon ? `<span class="entry-icon">${m.icon}</span> ` : ''}${escHtml(m.name)}</div>
+            <div class="entry-tagline">${escHtml(tagline)}</div>
+            ${badgesHtml}
+            <div class="entry-last-logged">${lastText}</div>
+            ${todaySessionHtml}
+            ${trashHtml}
+            ${inactiveHtml}
+            ${rivalHtml}
+          </div>
+          <div class="entry-days">
+            <div class="days-count">${score}</div>
+            <span class="days-unit">${currentTab === 'week' ? 'this wk' : 'days'}</span>
+          </div>
+          ${controlsHtml}
         </div>
-        <div class="entry-days">
-          <div class="days-count">${score}</div>
-          <span class="days-unit">${currentTab === 'week' ? 'this wk' : 'days'}</span>
+        <div class="reactions-row" id="reactions-${m.id}">${reactionsHtml}</div>
+        <div class="entry-expand ${isExpanded ? 'open' : ''}" id="expand-${m.id}">
+          <div class="heatmap-wrap" id="heatmap-${m.id}"></div>
         </div>
-        ${controlsHtml}
       `;
+
       entriesContainer.appendChild(el);
+
+      // Build heatmap if expanded
+      if (isExpanded) buildHeatmap(m.id, m.name);
     });
   });
 
   updateActiveBar(isAdmin);
 }
 
-function updateActiveBar(isAdmin) {
-  const bar = document.getElementById('activeBar');
-  if (activeUser) {
-    bar.classList.add('visible');
-    document.getElementById('activeBarName').textContent = activeUser.name;
-    if (isAdmin) document.getElementById('adminPanel').classList.add('visible');
-  } else {
-    bar.classList.remove('visible');
-    document.getElementById('adminPanel').classList.remove('visible');
+// ── Reactions ─────────────────────────────────────────
+function buildReactionsHtml(memberId) {
+  const reactions = cachedReactions[memberId] || [];
+
+  // Group by emoji
+  const grouped = {};
+  reactions.forEach(r => {
+    if (!grouped[r.emoji]) grouped[r.emoji] = [];
+    grouped[r.emoji].push(r.reactor_id);
+  });
+
+  const myId = activeUser?.id;
+  let html = '';
+  Object.entries(grouped).forEach(([emoji, reactors]) => {
+    const mine = myId && reactors.includes(myId);
+    html += `<button class="reaction-chip ${mine ? 'mine' : ''}" onclick="toggleReaction('${memberId}','${emoji}')" title="${mine ? 'Remove reaction' : 'React'}">${emoji} <span class="count">${reactors.length}</span></button>`;
+  });
+
+  if (activeUser && activeUser.id !== memberId) {
+    html += `<div style="position:relative;display:inline-block;" id="rp-wrap-${memberId}">
+      <button class="btn-add-reaction" onclick="toggleReactionPicker('${memberId}')">+ React</button>
+      <div class="reaction-picker" id="rp-${memberId}" style="display:none;">
+        ${REACTION_EMOJIS.map(e => `<button class="reaction-emoji-btn" onclick="toggleReaction('${memberId}','${e}');closeAllPickers()">${e}</button>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  return html;
+}
+
+function toggleReactionPicker(memberId) {
+  closeAllPickers();
+  const el = document.getElementById(`rp-${memberId}`);
+  if (el) el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+}
+
+function closeAllPickers() {
+  document.querySelectorAll('[id^="rp-"]').forEach(el => {
+    if (!el.id.startsWith('rp-wrap')) el.style.display = 'none';
+  });
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('[id^="rp-wrap"]') && !e.target.classList.contains('btn-add-reaction')) closeAllPickers();
+});
+
+async function toggleReaction(memberId, emoji) {
+  if (!activeUser) { setStatus('Sign in to react', 'info'); return; }
+  const myId = activeUser.id;
+  const reactions = cachedReactions[memberId] || [];
+  const existing = reactions.find(r => r.reactor_id === myId && r.emoji === emoji);
+
+  try {
+    if (existing) {
+      await sbFetch(`reactions?id=eq.${existing.id}`, { method: 'DELETE', prefer: 'return=minimal' });
+    } else {
+      await sbFetch('reactions', {
+        method: 'POST', prefer: 'return=minimal',
+        body: JSON.stringify({ member_id: memberId, reactor_id: myId, emoji })
+      });
+    }
+    // Reload just reactions
+    const reactions2 = await sbFetch('reactions?select=id,member_id,reactor_id,emoji').catch(() => []);
+    cachedReactions = {};
+    (reactions2 || []).forEach(r => {
+      if (!cachedReactions[r.member_id]) cachedReactions[r.member_id] = [];
+      cachedReactions[r.member_id].push(r);
+    });
+    // Re-render just the reactions row
+    const el = document.getElementById(`reactions-${memberId}`);
+    if (el) el.innerHTML = buildReactionsHtml(memberId);
+  } catch(e) {
+    setStatus('Reaction failed: ' + e.message, 'error');
   }
 }
 
+// ── Heatmap ───────────────────────────────────────────
+// Track which month each member's heatmap is viewing: { memberId: { year, month } }
+const heatmapMonth = {};
+
+function toggleExpand(memberId) {
+  const expandEl = document.getElementById(`expand-${memberId}`);
+  if (!expandEl) return;
+  if (expandedEntries.has(memberId)) {
+    expandedEntries.delete(memberId);
+    expandEl.classList.remove('open');
+  } else {
+    expandedEntries.add(memberId);
+    expandEl.classList.add('open');
+    // Default to current month
+    const now = new Date();
+    heatmapMonth[memberId] = { year: now.getFullYear(), month: now.getMonth() };
+    buildHeatmap(memberId);
+  }
+}
+
+function heatmapNav(memberId, delta) {
+  const cur = heatmapMonth[memberId] || { year: new Date().getFullYear(), month: new Date().getMonth() };
+  let { year, month } = cur;
+  month += delta;
+  if (month < 0)  { month = 11; year--; }
+  if (month > 11) { month = 0;  year++; }
+  // Don't go into the future beyond current month
+  const now = new Date();
+  if (year > now.getFullYear() || (year === now.getFullYear() && month > now.getMonth())) return;
+  heatmapMonth[memberId] = { year, month };
+  buildHeatmap(memberId);
+}
+
+function buildHeatmap(memberId) {
+  const wrap = document.getElementById(`heatmap-${memberId}`);
+  if (!wrap) return;
+
+  const sessions = cachedSessions[memberId] || [];
+
+  // Normalise all session dates to plain YYYY-MM-DD regardless of timezone offsets
+  const sessionDates = new Set(
+    sessions.map(s => {
+      if (!s.logged_at) return null;
+      // logged_at may be "2026-05-28T10:00:00+00:00" or "2026-05-28" — take first 10 chars
+      return s.logged_at.slice(0, 10);
+    }).filter(Boolean)
+  );
+
+  const now   = new Date();
+  const todayStr = todayISO();
+  const { year, month } = heatmapMonth[memberId] || { year: now.getFullYear(), month: now.getMonth() };
+
+  const monthName = new Date(year, month, 1).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }).toUpperCase();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  // Work out what day of week the 1st falls on (Mon=0 … Sun=6)
+  const firstDow = (new Date(year, month, 1).getDay() + 6) % 7; // convert Sun=0 to Mon=0
+
+  // Build the calendar grid cells
+  // We have firstDow empty cells then daysInMonth cells
+  const totalCells = firstDow + daysInMonth;
+  const totalCols  = Math.ceil(totalCells / 7);
+
+  // Can we go back? Check if any sessions exist before this month
+  const canGoBack = sessions.some(s => {
+    const d = s.logged_at?.slice(0, 7); // YYYY-MM
+    return d && d < `${year}-${String(month+1).padStart(2,'0')}`;
+  }) || (year > 2020); // always allow going back to reasonable limit
+
+  // Can we go forward?
+  const isCurrentMonth = year === now.getFullYear() && month === now.getMonth();
+
+  // Sessions in this month only (for stats)
+  const monthPrefix = `${year}-${String(month+1).padStart(2,'0')}`;
+  const monthSessions = sessions.filter(s => s.logged_at?.slice(0,7) === monthPrefix);
+
+  // Type breakdown for this month
+  const typeCounts = {};
+  monthSessions.forEach(s => { if (s.type) typeCounts[s.type] = (typeCounts[s.type] || 0) + 1; });
+  const typeBreakdown = Object.entries(typeCounts).map(([t, c]) =>
+    `<span class="session-type-tag ${t}">${SESSION_TYPES[t] || ''} ${t} ×${c}</span>`
+  ).join(' ');
+
+  // Recent sessions list for this month (last 5)
+  const recent = monthSessions.slice(0, 5);
+  const historyHtml = recent.length ? `
+    <div class="session-history">
+      <div class="session-history-title">Sessions this month</div>
+      ${recent.map(s => {
+        const dt = s.logged_at ? new Date(s.logged_at.slice(0,10) + 'T12:00:00').toLocaleDateString('en-GB', { day:'numeric', month:'short' }) : '—';
+        return `<div class="session-item">
+          <span class="session-date">${dt}</span>
+          ${s.type ? `<span class="session-type-tag ${s.type}">${SESSION_TYPES[s.type] || ''} ${s.type}</span>` : ''}
+          ${s.note ? `<span class="session-note-text">${escHtml(s.note)}</span>` : ''}
+        </div>`;
+      }).join('')}
+    </div>
+  ` : '<div class="session-history"><div class="session-history-title" style="color:var(--muted);font-style:italic;">No sessions this month</div></div>';
+
+  // Build HTML
+  wrap.innerHTML = '';
+
+  // Header row: nav + month label
+  const header = document.createElement('div');
+  header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;';
+  header.innerHTML = `
+    <button onclick="heatmapNav('${memberId}',-1)" style="background:none;border:1px solid var(--border);color:var(--muted);width:1.6rem;height:1.6rem;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center;" title="Previous month">‹</button>
+    <span style="font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text);font-weight:700;">${monthName}</span>
+    <button onclick="heatmapNav('${memberId}',1)" style="background:none;border:1px solid var(--border);color:${isCurrentMonth ? 'var(--border)' : 'var(--muted)'};width:1.6rem;height:1.6rem;cursor:${isCurrentMonth ? 'default' : 'pointer'};font-size:0.8rem;display:flex;align-items:center;justify-content:center;" title="Next month" ${isCurrentMonth ? 'disabled' : ''}>›</button>
+  `;
+  wrap.appendChild(header);
+
+  // Day-of-week labels
+  const dowRow = document.createElement('div');
+  dowRow.style.cssText = 'display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px;';
+  ['M','T','W','T','F','S','S'].forEach(d => {
+    const lbl = document.createElement('div');
+    lbl.style.cssText = 'text-align:center;font-size:0.55rem;color:var(--muted);letter-spacing:0.05em;';
+    lbl.textContent = d;
+    dowRow.appendChild(lbl);
+  });
+  wrap.appendChild(dowRow);
+
+  // Calendar grid
+  const grid = document.createElement('div');
+  grid.style.cssText = 'display:grid;grid-template-columns:repeat(7,1fr);gap:3px;';
+
+  for (let i = 0; i < totalCols * 7; i++) {
+    const cell = document.createElement('div');
+    const dayNum = i - firstDow + 1;
+
+    if (dayNum < 1 || dayNum > daysInMonth) {
+      // Empty spacer
+      cell.style.cssText = 'width:100%;aspect-ratio:1;';
+    } else {
+      const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
+      const isFuture = ds > todayStr;
+      const hasSession = sessionDates.has(ds);
+      const isToday = ds === todayStr;
+
+      cell.className = 'heatmap-cell';
+      cell.style.cssText = 'width:100%;aspect-ratio:1;position:relative;border-radius:2px;';
+      cell.title = ds;
+
+      if (!isFuture && hasSession) cell.classList.add('level-3');
+      if (isToday) cell.classList.add('today');
+      if (isFuture) cell.style.opacity = '0.2';
+
+      // Day number label inside cell
+      const lbl = document.createElement('span');
+      lbl.style.cssText = `position:absolute;bottom:1px;right:2px;font-size:0.5rem;color:${hasSession ? 'rgba(0,0,0,0.5)' : 'var(--muted)'};line-height:1;`;
+      lbl.textContent = dayNum;
+      cell.appendChild(lbl);
+    }
+
+    grid.appendChild(cell);
+  }
+  wrap.appendChild(grid);
+
+  // Stats + history
+  const statsDiv = document.createElement('div');
+  statsDiv.innerHTML = `
+    <div class="heatmap-stats" style="margin-top:0.6rem;">
+      <div class="heatmap-stat">This month <strong>${monthSessions.length}</strong></div>
+      <div class="heatmap-stat">All time <strong>${sessions.length}</strong></div>
+    </div>
+    ${typeBreakdown ? `<div style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-top:0.5rem;">${typeBreakdown}</div>` : ''}
+    ${historyHtml}
+  `;
+  wrap.appendChild(statsDiv);
+}
+
+// ── Log session modal ─────────────────────────────────
+function triggerLog(memberId) {
+  pendingLogTarget = memberId;
+  selectedSessionType = null;
+  document.querySelectorAll('.session-type-btn').forEach(b => b.className = 'session-type-btn');
+  document.getElementById('sessionNote').value = '';
+  document.getElementById('logModal').classList.add('open');
+}
+
+function closeLogModal() {
+  document.getElementById('logModal').classList.remove('open');
+  pendingLogTarget = null;
+}
+
+function selectType(type) {
+  selectedSessionType = type;
+  document.querySelectorAll('.session-type-btn').forEach(b => b.className = 'session-type-btn');
+  document.getElementById(`type${type.charAt(0).toUpperCase() + type.slice(1)}`).className = `session-type-btn selected-${type}`;
+}
+
+async function submitLogSession() {
+  const memberId = pendingLogTarget;
+  if (!memberId) return;
+  const note = document.getElementById('sessionNote').value.trim();
+  closeLogModal();
+  await addDay(memberId, selectedSessionType || null, note || null);
+}
+
 // ── Add day ───────────────────────────────────────────
-async function addDay(id) {
+async function addDay(id, sessionType = null, note = null) {
   const isAdmin = activeUser?.is_admin;
   if (!activeUser) return;
   if (!isAdmin && activeUser.id !== id) return;
@@ -757,17 +1195,14 @@ async function addDay(id) {
       const weekStart = getWeekStart();
       patch.last_logged = today;
 
-      // Streak
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       const yesterdayISO = yesterday.toISOString().split('T')[0];
       const newStreak = m?.last_logged === yesterdayISO ? (m.streak ?? 1) + 1 : 1;
       patch.streak = newStreak;
-
-      // PB streak
       patch.pb_streak = Math.max(newStreak, m?.pb_streak ?? 0);
+      patch.missed_streak = 0; // reset shame counter on log
 
-      // Weekly days — reset if new week
       if (m?.week_start === weekStart) {
         patch.weekly_days = (m.weekly_days ?? 0) + 1;
       } else {
@@ -776,10 +1211,28 @@ async function addDay(id) {
       }
     }
 
-    await sbFetch(`members?id=eq.${id}`, {
-      method: 'PATCH', prefer: 'return=minimal', body: JSON.stringify(patch)
-    });
-    if (!isAdmin) setStatus('Session logged! 💪', 'success');
+    await sbFetch(`members?id=eq.${id}`, { method: 'PATCH', prefer: 'return=minimal', body: JSON.stringify(patch) });
+
+    // Insert into sessions table
+    try {
+      await sbFetch('sessions', {
+        method: 'POST', prefer: 'return=minimal',
+        body: JSON.stringify({ member_id: id, type: sessionType, note: note, logged_at: new Date().toISOString() })
+      });
+    } catch(_) { /* sessions table may not exist yet — silent fail */ }
+
+    const newDays = current + 1;
+    const milestone = getMilestone(newDays);
+    if (milestone) {
+      launchConfetti();
+      setStatus(`🎉 ${milestone} DAY MILESTONE! Keep going!`, 'success');
+    } else if (!isAdmin) {
+      setStatus('Session logged! 💪', 'success');
+    }
+
+    // Trash talk (non-blocking)
+    if (!isAdmin && ANTHROPIC_KEY) generateTrashTalk(id, newDays, sessionType).catch(() => {});
+
     await loadAndRender();
   } catch(e) {
     setStatus('Error: ' + e.message, 'error');
@@ -801,15 +1254,10 @@ async function subDay(id) {
     const patch = { days: current - 1 };
     if (!isAdmin && m?.last_logged === todayISO()) {
       patch.last_logged = null;
-      // Also decrement weekly
       const weekStart = getWeekStart();
-      if (m?.week_start === weekStart && (m.weekly_days ?? 0) > 0) {
-        patch.weekly_days = m.weekly_days - 1;
-      }
+      if (m?.week_start === weekStart && (m.weekly_days ?? 0) > 0) patch.weekly_days = m.weekly_days - 1;
     }
-    await sbFetch(`members?id=eq.${id}`, {
-      method: 'PATCH', prefer: 'return=minimal', body: JSON.stringify(patch)
-    });
+    await sbFetch(`members?id=eq.${id}`, { method: 'PATCH', prefer: 'return=minimal', body: JSON.stringify(patch) });
     await loadAndRender();
   } catch(e) {
     setStatus('Error: ' + e.message, 'error');
@@ -817,14 +1265,85 @@ async function subDay(id) {
   }
 }
 
-async function getCurrentDays(id) {
-  const rows = await sbFetch(`members?id=eq.${id}&select=days`);
-  return rows?.[0]?.days ?? 0;
+// ── AI Trash Talk ─────────────────────────────────────
+async function generateTrashTalk(memberId, newDays, sessionType) {
+  if (!ANTHROPIC_KEY) return;
+  const member = cachedMembers.find(m => m.id === memberId);
+  if (!member) return;
+  const others = cachedMembers.filter(m => !m.is_admin && m.id !== memberId).map(m => `${m.name} (${m.days} days)`).join(', ');
+  const typeStr = sessionType ? ` - they just did a ${sessionType} session` : '';
+
+  const prompt = `You are a gym leaderboard AI. Generate ONE short, punchy, funny trash talk line (max 12 words) for ${member.name} who just logged their ${newDays}th gym day${typeStr}. The other competitors are: ${others || 'none yet'}. Be playful and motivating, not mean. No quotes, just the line.`;
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
+    body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 60, messages: [{ role: 'user', content: prompt }] })
+  });
+  const data = await res.json();
+  const text = data.content?.[0]?.text?.trim();
+  if (text) {
+    pendingTrashTalk[memberId] = text;
+    // Update just that entry's trash talk line without full re-render
+    const entry = document.getElementById(`entry-${memberId}`);
+    if (entry) {
+      const existing = entry.querySelector('.entry-trash');
+      if (existing) { existing.textContent = text; }
+      else {
+        const lastLogged = entry.querySelector('.entry-last-logged');
+        if (lastLogged) {
+          const el = document.createElement('div');
+          el.className = 'entry-trash';
+          el.textContent = text;
+          lastLogged.after(el);
+        }
+      }
+    }
+    // Clear after 30s
+    setTimeout(() => { delete pendingTrashTalk[memberId]; }, 30000);
+  }
+}
+
+// ── Confetti ──────────────────────────────────────────
+function launchConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const particles = Array.from({ length: 120 }, () => ({
+    x: Math.random() * canvas.width,
+    y: -10,
+    vx: (Math.random() - 0.5) * 4,
+    vy: Math.random() * 4 + 2,
+    color: ['#f5c842','#ff3c3c','#39d353','#4da6ff','#ffa000'][Math.floor(Math.random() * 5)],
+    size: Math.random() * 8 + 4,
+    rot: Math.random() * 360,
+    rotV: (Math.random() - 0.5) * 8
+  }));
+  let frame;
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.rot += p.rotV; p.vy += 0.05;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.rot * Math.PI) / 180);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = Math.max(0, 1 - t / 120);
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+      ctx.restore();
+    });
+    t++;
+    if (t < 150) frame = requestAnimationFrame(draw);
+    else { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+  }
+  cancelAnimationFrame(frame);
+  draw();
 }
 
 // ── Icon picker ───────────────────────────────────────
-let selectedSignupIcon = null;
-let selectedModalIcon  = null;
+let selectedSignupIcon = null, selectedModalIcon = null;
 
 function renderIconGrid(containerId, stateKey, currentIcon) {
   const grid = document.getElementById(containerId);
@@ -845,24 +1364,17 @@ function renderIconGrid(containerId, stateKey, currentIcon) {
   else selectedModalIcon = currentIcon || null;
 }
 
-function openIconModal(currentIcon) {
-  renderIconGrid('iconModalGrid', 'modal', currentIcon);
-  document.getElementById('iconModal').classList.add('open');
-}
+function openIconModal(cur) { renderIconGrid('iconModalGrid', 'modal', cur); document.getElementById('iconModal').classList.add('open'); }
 function closeIconModal() { document.getElementById('iconModal').classList.remove('open'); }
 
 async function saveIcon() {
   if (!activeUser || !selectedModalIcon) { closeIconModal(); return; }
   try {
-    await sbFetch(`members?id=eq.${activeUser.id}`, {
-      method: 'PATCH', prefer: 'return=minimal',
-      body: JSON.stringify({ icon: selectedModalIcon })
-    });
+    await sbFetch(`members?id=eq.${activeUser.id}`, { method: 'PATCH', prefer: 'return=minimal', body: JSON.stringify({ icon: selectedModalIcon }) });
+    activeUser.icon = selectedModalIcon;
     closeIconModal();
     await loadAndRender();
-  } catch(e) {
-    setStatus('Failed to save icon', 'error');
-  }
+  } catch(e) { setStatus('Failed to save icon', 'error'); }
 }
 
 // ── Add member ────────────────────────────────────────
@@ -873,7 +1385,6 @@ async function addMember() {
   const name = nameInput.value.trim();
   const pin  = pinInput.value.trim();
   const startDays = Math.max(0, parseInt(daysInput.value) || 0);
-
   if (!name) { nameInput.focus(); return; }
   if (!/^\d{6}$/.test(pin)) {
     pinInput.style.borderColor = 'var(--accent)';
@@ -881,70 +1392,40 @@ async function addMember() {
     setStatus('PIN must be exactly 6 digits', 'error');
     return;
   }
-
   const btn = document.getElementById('btnAdd');
   btn.disabled = true;
   showLoading(true);
-
   try {
     const pinHash = await sha256(pin);
     await sbFetch('members', {
       method: 'POST', prefer: 'return=minimal',
       body: JSON.stringify({ name: name.toUpperCase(), pin_hash: pinHash, days: startDays, is_admin: false, icon: selectedSignupIcon })
     });
-    nameInput.value = '';
-    pinInput.value  = '';
-    daysInput.value = '';
+    nameInput.value = ''; pinInput.value = ''; daysInput.value = '';
     selectedSignupIcon = null;
     renderIconGrid('signupIconGrid', 'signup', null);
     setStatus(`${name.toUpperCase()} joined with ${startDays} day${startDays !== 1 ? 's' : ''}!`, 'success');
     await loadAndRender();
   } catch(e) {
-    const msg = e.message.includes('unique') ? 'That name is already taken' : 'Error: ' + e.message;
-    setStatus(msg, 'error');
+    setStatus(e.message.includes('unique') ? 'That name is already taken' : 'Error: ' + e.message, 'error');
     showLoading(false);
-  } finally {
-    btn.disabled = false;
-  }
+  } finally { btn.disabled = false; }
 }
 
 // ── PIN modal ─────────────────────────────────────────
-let pinTarget = null;
-let pinBuffer = '';
+let pinTarget = null, pinBuffer = '';
 
 function openPinModal(id, name) {
-  pinTarget = { id, name };
-  pinBuffer = '';
+  pinTarget = { id, name }; pinBuffer = '';
   updatePinDots();
   document.getElementById('pinModalName').textContent = name;
   document.getElementById('pinError').textContent = '';
   document.getElementById('pinModal').classList.add('open');
 }
-
-function closePinModal() {
-  document.getElementById('pinModal').classList.remove('open');
-  pinTarget = null;
-  pinBuffer = '';
-}
-
-function pinKey(digit) {
-  if (pinBuffer.length >= 6) return;
-  pinBuffer += digit;
-  updatePinDots();
-  if (pinBuffer.length === 6) setTimeout(submitPin, 120);
-}
-
-function pinDel() {
-  pinBuffer = pinBuffer.slice(0, -1);
-  updatePinDots();
-  document.getElementById('pinError').textContent = '';
-}
-
-function updatePinDots() {
-  for (let i = 0; i < 6; i++) {
-    document.getElementById(`dot${i}`).classList.toggle('filled', i < pinBuffer.length);
-  }
-}
+function closePinModal() { document.getElementById('pinModal').classList.remove('open'); pinTarget = null; pinBuffer = ''; }
+function pinKey(digit) { if (pinBuffer.length >= 6) return; pinBuffer += digit; updatePinDots(); if (pinBuffer.length === 6) setTimeout(submitPin, 120); }
+function pinDel() { pinBuffer = pinBuffer.slice(0, -1); updatePinDots(); document.getElementById('pinError').textContent = ''; }
+function updatePinDots() { for (let i = 0; i < 6; i++) document.getElementById(`dot${i}`).classList.toggle('filled', i < pinBuffer.length); }
 
 async function submitPin() {
   if (!pinTarget || pinBuffer.length !== 6) return;
@@ -955,22 +1436,16 @@ async function submitPin() {
     const member = rows?.[0];
     if (!member || member.pin_hash !== hash) {
       document.getElementById('pinError').textContent = 'Incorrect PIN';
-      pinBuffer = '';
-      updatePinDots();
-      showLoading(false);
-      return;
+      pinBuffer = ''; updatePinDots(); showLoading(false); return;
     }
     activeUser = { id: member.id, name: member.name, is_admin: member.is_admin, icon: member.icon };
     closePinModal();
     setStatus(`Signed in as ${member.name}`, 'success');
     await loadAndRender();
-    // Prompt icon picker if they don't have one yet
     if (!member.icon && !member.is_admin) openIconModal(null);
   } catch(e) {
     document.getElementById('pinError').textContent = 'Error — try again';
-    pinBuffer = '';
-    updatePinDots();
-    showLoading(false);
+    pinBuffer = ''; updatePinDots(); showLoading(false);
   }
 }
 
@@ -983,17 +1458,10 @@ async function openAdminLogin() {
     if (!rows?.length) { setStatus('No admin account found', 'error'); showLoading(false); return; }
     showLoading(false);
     openPinModal(rows[0].id, rows[0].name);
-  } catch(e) {
-    setStatus('Error: ' + e.message, 'error');
-    showLoading(false);
-  }
+  } catch(e) { setStatus('Error: ' + e.message, 'error'); showLoading(false); }
 }
 
-function changeIcon() {
-  if (!activeUser) return;
-  openIconModal(activeUser.icon || null);
-}
-
+function changeIcon() { if (!activeUser) return; openIconModal(activeUser.icon || null); }
 function logout() {
   activeUser = null;
   document.getElementById('adminPanel').classList.remove('visible');
@@ -1001,22 +1469,58 @@ function logout() {
   loadAndRender();
 }
 
+function updateActiveBar(isAdmin) {
+  const bar = document.getElementById('activeBar');
+  if (activeUser) {
+    bar.classList.add('visible');
+    document.getElementById('activeBarName').textContent = activeUser.name;
+    if (isAdmin) document.getElementById('adminPanel').classList.add('visible');
+  } else {
+    bar.classList.remove('visible');
+    document.getElementById('adminPanel').classList.remove('visible');
+  }
+}
+
 // ── Reset ─────────────────────────────────────────────
 function openResetModal()  { document.getElementById('resetModal').classList.add('open'); }
 function closeResetModal() { document.getElementById('resetModal').classList.remove('open'); }
-
 async function confirmReset() {
-  closeResetModal();
-  showLoading(true);
+  closeResetModal(); showLoading(true);
   try {
     await sbFetch('members?is_admin=eq.false', {
       method: 'PATCH', prefer: 'return=minimal',
-      body: JSON.stringify({ days: 0, last_logged: null, streak: 0, pb_streak: 0, weekly_days: 0, week_start: null })
+      body: JSON.stringify({ days: 0, last_logged: null, streak: 0, pb_streak: 0, weekly_days: 0, week_start: null, missed_streak: 0 })
     });
+    // Optionally clear sessions — comment out if you want to keep history
+    // await sbFetch('sessions?id=neq.00000000-0000-0000-0000-000000000000', { method: 'DELETE', prefer: 'return=minimal' });
     setStatus('Season reset — everyone back to zero', 'success');
     await loadAndRender();
+  } catch(e) { setStatus('Reset failed: ' + e.message, 'error'); showLoading(false); }
+}
+
+// ── Seed test data ────────────────────────────────────
+async function seedTestData() {
+  if (!activeUser?.is_admin) return;
+  showLoading(true);
+  try {
+    const d = new Date();
+    const dow = d.getDay();
+    const daysBack = dow >= 3 ? dow - 3 : dow + 4;
+    d.setDate(d.getDate() - daysBack);
+    const wednesdayISO = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const ts = `${wednesdayISO}T10:00:00+00:00`;
+    const members = cachedMembers.filter(m => !m.is_admin);
+    if (!members.length) { setStatus('No members to seed', 'info'); showLoading(false); return; }
+    await Promise.all(members.map(m =>
+      sbFetch('sessions', {
+        method: 'POST', prefer: 'return=minimal',
+        body: JSON.stringify({ member_id: m.id, type: 'weights', note: 'Test session 💪', logged_at: ts })
+      }).catch(() => {})
+    ));
+    setStatus(`Seeded ${members.length} sessions on ${wednesdayISO}`, 'success');
+    await loadAndRender();
   } catch(e) {
-    setStatus('Reset failed: ' + e.message, 'error');
+    setStatus('Seed failed: ' + e.message, 'error');
     showLoading(false);
   }
 }
@@ -1030,7 +1534,7 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Backspace') pinDel();
     if (e.key === 'Escape') closePinModal();
   }
-  if (e.key === 'Escape') closeResetModal();
+  if (e.key === 'Escape') { closeResetModal(); closeLogModal(); closeIconModal(); }
 });
 
 // ── Init ──────────────────────────────────────────────
