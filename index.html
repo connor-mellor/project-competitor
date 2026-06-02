@@ -90,6 +90,7 @@
     cursor: pointer; transition: all 0.15s;
   }
   .btn-logout:hover { border-color: var(--accent); color: var(--accent); }
+  .modal-error { color: var(--accent); font-size: 0.75rem; letter-spacing: 0.15em; min-height: 1.2rem; margin-bottom: 0.5rem; text-align:center; }
 
   /* COUNTDOWN */
   .countdown-bar {
@@ -168,6 +169,8 @@
     justify-content: center; transition: all 0.15s ease; font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
   }
   .btn-control.add:hover:not(:disabled) { background: var(--green); border-color: var(--green); color: #000; transform: scale(1.1); }
+  .btn-control.add.logged { background: rgba(57,211,83,0.15); border-color: var(--green); color: var(--green); }
+  .btn-control.add.logged:hover { background: rgba(255,60,60,0.15); border-color: var(--accent); color: var(--accent); }
   .btn-control.sub:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); color: #fff; transform: scale(1.1); }
   .btn-control:disabled { opacity: 0.2; cursor: not-allowed; }
 
@@ -257,6 +260,20 @@
     font-family: 'Barlow Condensed', sans-serif;
   }
   .btn-add-reaction:hover { border-color: var(--gold); color: var(--gold); }
+
+
+  /* REACTION TOOLTIP */
+  .reaction-tooltip {
+    position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-size: 0.7rem; letter-spacing: 0.05em;
+    padding: 0.3rem 0.6rem; white-space: nowrap; pointer-events: none;
+    z-index: 50; animation: popIn 0.12s ease;
+  }
+  .reaction-tooltip::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 4px solid transparent; border-top-color: var(--border);
+  }
 
   /* REACTION PICKER POPUP */
   .reaction-picker {
@@ -439,10 +456,202 @@
   .entry-icon { font-size: 1.3rem; line-height: 1; margin-bottom: 0.1rem; }
 
   footer { text-align: center; color: var(--muted); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding-top: 2rem; }
+
+  /* PROFILE MODAL */
+  .modal-profile {
+    background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--gold);
+    max-width: 560px; width: 95%; max-height: 90vh; overflow-y: auto; text-align: left;
+    scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+  }
+  .modal-profile::-webkit-scrollbar { width: 4px; }
+  .modal-profile::-webkit-scrollbar-thumb { background: var(--border); }
+  .profile-header {
+    padding: 1.5rem 1.5rem 1rem; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  }
+  .profile-title { display: flex; align-items: center; gap: 0.6rem; }
+  .profile-icon-big { font-size: 2.2rem; line-height: 1; }
+  .profile-name { font-family: 'Black Ops One', cursive; font-size: 1.6rem; color: var(--text); letter-spacing: 0.05em; }
+  .profile-rank-tag { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-top: 0.1rem; }
+  .btn-close-profile {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    width: 2rem; height: 2rem; cursor: pointer; font-size: 1rem; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+  }
+  .btn-close-profile:hover { border-color: var(--accent); color: var(--accent); }
+
+  .profile-stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--border);
+  }
+  .profile-stat-box {
+    padding: 1rem 0.75rem; text-align: center; border-right: 1px solid var(--border);
+  }
+  .profile-stat-box:last-child { border-right: none; }
+  .profile-stat-val { font-family: 'Black Ops One', cursive; font-size: 1.6rem; color: var(--gold); line-height: 1; }
+  .profile-stat-val.green { color: var(--green); }
+  .profile-stat-val.orange { color: var(--orange); }
+  .profile-stat-val.blue { color: var(--blue); }
+  .profile-stat-lbl { font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-top: 0.2rem; }
+
+  .profile-section { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); }
+  .profile-section:last-child { border-bottom: none; }
+  .profile-section-title {
+    font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 0.75rem; font-weight: 700;
+  }
+
+  /* Streak graph */
+  .streak-graph { display: flex; gap: 3px; align-items: flex-end; height: 60px; }
+  .streak-bar {
+    flex: 1; background: var(--rank-bg); border-radius: 1px 1px 0 0;
+    min-height: 3px; transition: background 0.2s; position: relative; cursor: default;
+  }
+  .streak-bar.has-session { background: var(--green); }
+  .streak-bar.today { background: var(--gold); }
+  .streak-bar:hover .streak-bar-tip {
+    display: block;
+  }
+  .streak-bar-tip {
+    display: none; position: absolute; bottom: calc(100% + 4px); left: 50%;
+    transform: translateX(-50%); background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-size: 0.65rem; padding: 0.2rem 0.4rem; white-space: nowrap;
+    z-index: 10; pointer-events: none;
+  }
+  .streak-graph-labels { display: flex; justify-content: space-between; margin-top: 0.3rem; }
+  .streak-graph-label { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.05em; }
+
+  /* Type breakdown donut-style bars */
+  .type-breakdown { display: flex; flex-direction: column; gap: 0.5rem; }
+  .type-row { display: flex; align-items: center; gap: 0.75rem; }
+  .type-row-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; min-width: 5rem; }
+  .type-row-label.weights { color: var(--orange); }
+  .type-row-label.cardio  { color: var(--blue); }
+  .type-row-label.sport   { color: var(--green); }
+  .type-row-label.other   { color: var(--muted); }
+  .type-bar-track { flex: 1; height: 6px; background: var(--rank-bg); border-radius: 1px; overflow: hidden; }
+  .type-bar-fill { height: 100%; border-radius: 1px; transition: width 0.6s ease; }
+  .type-bar-fill.weights { background: var(--orange); }
+  .type-bar-fill.cardio  { background: var(--blue); }
+  .type-bar-fill.sport   { background: var(--green); }
+  .type-bar-fill.other   { background: var(--muted); }
+  .type-bar-count { font-size: 0.75rem; color: var(--muted); min-width: 2rem; text-align: right; }
+
+  /* Session history */
+  .profile-session-list { display: flex; flex-direction: column; gap: 0; }
+  .profile-session-row {
+    display: grid; grid-template-columns: 5.5rem 5rem 1fr;
+    align-items: center; gap: 0.75rem;
+    padding: 0.45rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.8rem;
+  }
+  .profile-session-row:last-child { border-bottom: none; }
+  .profile-session-date { color: var(--muted); font-size: 0.75rem; }
+  .profile-session-note { color: var(--silver); font-style: italic; opacity: 0.85; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .profile-session-empty { color: var(--muted); font-size: 0.8rem; font-style: italic; letter-spacing: 0.1em; }
+
+  /* Milestones */
+  .milestones-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .milestone-pip {
+    padding: 0.25rem 0.6rem; font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid;
+    border-radius: 1px;
+  }
+  .milestone-pip.earned { color: var(--purple); border-color: rgba(176,107,255,0.4); background: rgba(176,107,255,0.08); }
+  .milestone-pip.unearned { color: var(--border); border-color: var(--border); opacity: 0.5; }
+
+
+  /* LIGHT MODE */
+  body.light {
+    --bg: #f4f4f0;
+    --surface: #ffffff;
+    --surface2: #ebebeb;
+    --border: #d0d0d0;
+    --text: #111111;
+    --muted: #888888;
+    --rank-bg: #e8e8e4;
+    --gold: #c89a00;
+    --silver: #6a7080;
+    --bronze: #9a5a10;
+    --accent: #cc2020;
+    --green: #1a9e3a;
+    --orange: #c07000;
+    --blue: #1a72cc;
+    --purple: #7030cc;
+  }
+  body.light::before { background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.015) 2px, rgba(0,0,0,0.015) 4px); }
+
+  /* THEME TOGGLE */
+  .theme-toggle {
+    position: fixed; top: 1rem; right: 1rem; z-index: 150;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--muted); width: 2.2rem; height: 2.2rem;
+    cursor: pointer; font-size: 1rem; display: flex; align-items: center;
+    justify-content: center; transition: all 0.15s;
+  }
+  .theme-toggle:hover { border-color: var(--gold); color: var(--gold); }
+
+
+  /* HALL OF FAME */
+  .hof-season { background: var(--surface); border: 1px solid var(--border); margin-bottom: 0.75rem; }
+  .hof-season-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.75rem 1rem; border-bottom: 1px solid var(--border);
+    cursor: pointer; user-select: none;
+  }
+  .hof-season-header:hover { background: var(--surface2); }
+  .hof-season-name { font-family: 'Black Ops One', cursive; font-size: 1rem; color: var(--gold); letter-spacing: 0.05em; }
+  .hof-season-meta { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .hof-season-chevron { color: var(--muted); font-size: 0.9rem; transition: transform 0.2s; }
+  .hof-season-chevron.open { transform: rotate(180deg); }
+  .hof-season-body { display: none; padding: 0.75rem 1rem; }
+  .hof-season-body.open { display: block; }
+  .hof-podium { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .hof-podium-place {
+    flex: 1; padding: 0.75rem 0.5rem; text-align: center;
+    border: 1px solid var(--border); background: var(--rank-bg);
+  }
+  .hof-podium-place.p1 { border-top: 2px solid var(--gold); }
+  .hof-podium-place.p2 { border-top: 2px solid var(--silver); }
+  .hof-podium-place.p3 { border-top: 2px solid var(--bronze); }
+  .hof-place-medal { font-size: 1.2rem; }
+  .hof-place-name { font-family: 'Black Ops One', cursive; font-size: 0.85rem; letter-spacing: 0.05em; margin-top: 0.2rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hof-place-days { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .hof-rest { display: flex; flex-direction: column; gap: 0.3rem; }
+  .hof-rest-row { display: flex; align-items: center; gap: 0.75rem; font-size: 0.8rem; padding: 0.25rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  body.light .hof-rest-row { border-bottom-color: rgba(0,0,0,0.06); }
+  .hof-rest-row:last-child { border-bottom: none; }
+  .hof-rest-rank { color: var(--muted); min-width: 1.5rem; font-weight: 700; }
+  .hof-rest-name { flex: 1; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+  .hof-rest-days { color: var(--green); font-family: 'Black Ops One', cursive; }
+  .hof-empty { text-align: center; padding: 2rem 1rem; color: var(--muted); font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; border: 1px dashed var(--border); }
+
+
+  /* RANK CHANGE */
+  .rank-change { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.05em; display: block; margin-top: 1px; }
+  .rank-change.up   { color: var(--green); }
+  .rank-change.down { color: var(--accent); }
+  .rank-change.same { color: var(--muted); opacity: 0.5; }
+
+
+  /* PROFILE ACTIVITY TOGGLE */
+  .activity-toggle { display: flex; gap: 0; margin-bottom: 0.75rem; border: 1px solid var(--border); width: fit-content; }
+  .activity-toggle-btn {
+    background: transparent; border: none; color: var(--muted);
+    padding: 0.35rem 0.85rem; font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    cursor: pointer; transition: all 0.15s; border-right: 1px solid var(--border);
+  }
+  .activity-toggle-btn:last-child { border-right: none; }
+  .activity-toggle-btn.active { background: var(--surface2); color: var(--gold); }
+  .activity-toggle-btn:hover:not(.active) { color: var(--text); }
+  #profileCalendarWrap .heatmap-wrap { padding: 0; }
+
 </style>
 </head>
 <body>
 <canvas id="confettiCanvas"></canvas>
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">☀️</button>
 <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
 
 <div class="container">
@@ -460,6 +669,7 @@
     </div>
     <div style="display:flex;gap:0.5rem;">
       <button class="btn-logout" onclick="changeIcon()">Icon</button>
+      <button class="btn-logout" onclick="openRenameModal()">Rename</button>
       <button class="btn-logout" onclick="logout()">Logout</button>
     </div>
   </div>
@@ -481,6 +691,7 @@
   <div class="tabs">
     <button class="tab active" id="tabAll" onclick="switchTab('all')">All Time</button>
     <button class="tab" id="tabWeek" onclick="switchTab('week')">This Week</button>
+    <button class="tab" id="tabHof" onclick="switchTab('hof')">🏆 Hall of Fame</button>
   </div>
 
   <div class="board" id="board"></div>
@@ -512,6 +723,14 @@
 </div>
 
 <!-- PIN Modal -->
+
+<!-- Profile modal -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal-profile" id="profileModalInner">
+    <!-- populated by openProfileModal() -->
+  </div>
+</div>
+
 <div class="modal-overlay" id="pinModal">
   <div class="modal">
     <h2 class="gold">ENTER PIN</h2>
@@ -535,6 +754,27 @@
       <button class="pin-key del" onclick="pinDel()">⌫</button>
       <button class="pin-key" onclick="pinKey('0')">0</button>
       <button class="pin-key del" onclick="closePinModal()">✕</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Edit/Undo session modal -->
+<div class="modal-overlay" id="editSessionModal">
+  <div class="modal">
+    <h2 class="gold">TODAY'S SESSION</h2>
+    <p id="editSessionSummary" style="margin-bottom:0.75rem;"></p>
+    <div class="session-type-grid">
+      <button class="session-type-btn" id="editTypeWeights" onclick="selectEditType('weights')">🏋️ Weights</button>
+      <button class="session-type-btn" id="editTypeCardio"  onclick="selectEditType('cardio')">🏃 Cardio</button>
+      <button class="session-type-btn" id="editTypeSport"   onclick="selectEditType('sport')">⚽ Sport</button>
+      <button class="session-type-btn" id="editTypeOther"   onclick="selectEditType('other')">✦ Other</button>
+    </div>
+    <textarea class="note-input" id="editSessionNote" rows="2" placeholder="Update your note (optional)..."></textarea>
+    <div class="modal-actions" style="flex-direction:column;gap:0.5rem;">
+      <button class="btn-log" style="width:100%;" onclick="submitEditSession()">Save Changes</button>
+      <button class="btn-confirm" style="width:100%;background:transparent;border:1px solid var(--accent);color:var(--accent);" onclick="confirmUndoSession()">Undo — Remove Today's Session</button>
+      <button class="btn-cancel" style="width:100%;" onclick="closeEditSessionModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -579,6 +819,21 @@
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeIconModal()">Skip</button>
       <button class="btn-confirm" style="background:var(--gold);color:#000;" onclick="saveIcon()">Save</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Rename modal -->
+<div class="modal-overlay" id="renameModal">
+  <div class="modal">
+    <h2 class="gold">RENAME</h2>
+    <p>Choose a new display name</p>
+    <input class="add-input" id="renameInput" type="text" maxlength="24" autocomplete="off" style="width:100%;margin-bottom:1rem;text-align:center;">
+    <div class="modal-error" id="renameError"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeRenameModal()">Cancel</button>
+      <button class="btn-confirm" style="background:var(--gold);color:#000;" onclick="submitRename()">Save</button>
     </div>
   </div>
 </div>
@@ -648,6 +903,20 @@ function getWeekStart() {
   return `${mon.getFullYear()}-${String(mon.getMonth()+1).padStart(2,'0')}-${String(mon.getDate()).padStart(2,'0')}`;
 }
 
+
+// ── Effective streak ──────────────────────────────────
+// The stored streak is never reset server-side, so we derive
+// the live value: if last_logged was not today or yesterday, streak is 0.
+function effectiveStreak(member) {
+  if (!member.last_logged) return 0;
+  const today     = todayISO();
+  const yesterday = (() => { const d = new Date(); d.setDate(d.getDate() - 1); return d.toISOString().slice(0,10); })();
+  if (member.last_logged === today || member.last_logged === yesterday) {
+    return member.streak || 0;
+  }
+  return 0;
+}
+
 // ── Missed-day streak ─────────────────────────────────
 function missedDayStreak(member) {
   if (!member.last_logged) return 0;
@@ -701,7 +970,12 @@ function switchTab(tab) {
   currentTab = tab;
   document.getElementById('tabAll').classList.toggle('active', tab === 'all');
   document.getElementById('tabWeek').classList.toggle('active', tab === 'week');
-  renderBoard(cachedMembers);
+  document.getElementById('tabHof').classList.toggle('active', tab === 'hof');
+  if (tab === 'hof') {
+    loadSeasons().then(renderHof);
+  } else {
+    renderBoard(cachedMembers);
+  }
 }
 
 // ── Load & render ─────────────────────────────────────
@@ -729,6 +1003,7 @@ async function loadAndRender() {
     });
 
     cachedMembers = members;
+    saveRankSnapshot(members);
     renderBoard(members);
   } catch(e) {
     setStatus('Failed to load — ' + e.message, 'error');
@@ -804,31 +1079,44 @@ function renderBoard(members) {
       const isMe = activeUser && activeUser.id === m.id;
       const rivalNames = group.filter(r => r.id !== m.id).map(r => r.name);
       const score = scoreKey(m);
+      const lastSession = (cachedSessions[m.id] || [])[0];
+      // Fall back to most recent session date if last_logged was cleared by a subtract
+      const lastDateStr = m.last_logged || lastSession?.logged_at?.slice(0, 10) || null;
       let daysSinceLast = 999;
-      if (m.last_logged) {
-        const last = new Date(m.last_logged + 'T12:00:00');
-        daysSinceLast = Math.floor((new Date() - last) / 86400000);
+      if (lastDateStr) {
+        const last = new Date(lastDateStr + 'T12:00:00');
+        daysSinceLast = Math.max(0, Math.floor((new Date() - last) / 86400000));
       }
       const isInactive = daysSinceLast > 3 && m.days > 0;
       const missedDays = missedDayStreak(m);
       const milestone = getMilestone(m.days);
-      const lastSession = (cachedSessions[m.id] || [])[0];
 
       let lastText = 'No sessions yet';
-      if (m.last_logged) {
+      if (lastDateStr) {
         if (loggedToday) lastText = 'Logged today ✓';
-        else { const dt = new Date(m.last_logged + 'T12:00:00'); lastText = `Last: ${dt.toLocaleDateString('en-GB', { day:'numeric', month:'short' })}`; }
+        else { const dt = new Date(lastDateStr + 'T12:00:00'); lastText = `Last: ${dt.toLocaleDateString('en-GB', { day:'numeric', month:'short' })}`; }
       }
 
       const tagline = getTagline(m, m._rank, sorted.length, daysSinceLast);
       const rankClass = m._rank <= 3 ? `rank-${m._rank}` : '';
+
+      // Rank change vs yesterday's snapshot
+      const rankDelta = currentTab === 'all' ? getRankChange(m.id, m._rank) : null;
+      let rankChangeHtml = '';
+      if (rankDelta !== null) {
+        if (rankDelta > 0)      rankChangeHtml = `<span class="rank-change up">▲${rankDelta}</span>`;
+        else if (rankDelta < 0) rankChangeHtml = `<span class="rank-change down">▼${Math.abs(rankDelta)}</span>`;
+        else                    rankChangeHtml = `<span class="rank-change same">—</span>`;
+      }
+
       const el = document.createElement('div');
       el.className = `entry ${rankClass} ${isMe ? 'is-active' : ''} ${isInactive ? 'inactive-warning' : ''}`.trim();
       el.id = `entry-${m.id}`;
       el.style.animationDelay = `${gi * 0.05}s`;
 
       // Badges
-      const streakHtml  = (m.streak && m.streak >= 2) ? `<span class="streak-badge">🔥 ${m.streak} day streak</span>` : '';
+      const effStreak   = effectiveStreak(m);
+      const streakHtml  = effStreak >= 2 ? `<span class="streak-badge">🔥 ${effStreak} day streak</span>` : '';
       const pbHtml       = (m.pb_streak && m.pb_streak >= 2) ? `<span class="pb-badge">🏅 PB ${m.pb_streak} days</span>` : '';
       const shameHtml    = missedDays >= 2 ? `<span class="shame-badge">💤 ${missedDays} day skid</span>` : '';
       const milestoneHtml = milestone ? `<span class="milestone-badge">🎉 ${milestone} day milestone!</span>` : '';
@@ -847,14 +1135,19 @@ function renderBoard(members) {
 
       let controlsHtml;
       if (isAdmin) {
+        // Admin keeps +/- for manual correction
         controlsHtml = `<div class="entry-controls">
           <button class="btn-control add" onclick="triggerLog('${m.id}')">+</button>
           <button class="btn-control sub" onclick="subDay('${m.id}')" ${m.days <= 0 ? 'disabled' : ''}>−</button>
         </div>`;
       } else if (isMe) {
+        // Logged today: + opens edit/undo modal. Not logged: + opens log modal.
         controlsHtml = `<div class="entry-controls">
-          <button class="btn-control add" onclick="triggerLog('${m.id}')" ${loggedToday ? 'disabled title="Already logged today"' : ''}>+</button>
-          <button class="btn-control sub" onclick="subDay('${m.id}')" ${m.days <= 0 ? 'disabled' : ''}>−</button>
+          <button class="btn-control add ${loggedToday ? 'logged' : ''}"
+            onclick="${loggedToday ? `openEditSessionModal('${m.id}')` : `triggerLog('${m.id}')`}"
+            title="${loggedToday ? 'Edit or undo today\'s session' : 'Log a session'}">
+            ${loggedToday ? '✓' : '+'}
+          </button>
         </div>`;
       } else {
         controlsHtml = `<button class="btn-lock" onclick="openPinModal('${m.id}','${escHtml(m.name)}')" title="Sign in as ${escHtml(m.name)}">🔒</button>`;
@@ -869,9 +1162,9 @@ function renderBoard(members) {
       el.innerHTML = `
         ${loggedToday ? '<span class="today-badge">Today ✓</span>' : ''}
         <div class="entry-main">
-          <div class="entry-rank">${m._rank}</div>
+          <div class="entry-rank">${m._rank}${rankChangeHtml}</div>
           <div class="entry-info">
-            <div class="entry-name" onclick="toggleExpand('${m.id}')">${m.icon ? `<span class="entry-icon">${m.icon}</span> ` : ''}${escHtml(m.name)}</div>
+            <div class="entry-name" onclick="openProfileModal('${m.id}')" title="View profile">${m.icon ? `<span class="entry-icon">${m.icon}</span> ` : ''}${escHtml(m.name)}</div>
             <div class="entry-tagline">${escHtml(tagline)}</div>
             ${badgesHtml}
             <div class="entry-last-logged">${lastText}</div>
@@ -914,10 +1207,20 @@ function buildReactionsHtml(memberId) {
   });
 
   const myId = activeUser?.id;
+  // Build a name lookup from cachedMembers
+  const nameOf = id => cachedMembers.find(m => m.id === id)?.name || 'Someone';
   let html = '';
   Object.entries(grouped).forEach(([emoji, reactors]) => {
     const mine = myId && reactors.includes(myId);
-    html += `<button class="reaction-chip ${mine ? 'mine' : ''}" onclick="toggleReaction('${memberId}','${emoji}')" title="${mine ? 'Remove reaction' : 'React'}">${emoji} <span class="count">${reactors.length}</span></button>`;
+    const names = reactors.map(nameOf);
+    // Build tooltip: "Bill, Dave reacted" or "You and Bill reacted" etc.
+    const displayNames = names.map(n => (myId && reactors.includes(myId) && nameOf(myId) === n) ? 'You' : n);
+    const tooltip = displayNames.join(', ');
+    html += `<div class="reaction-chip-wrap" style="position:relative;display:inline-block;">
+      <button class="reaction-chip ${mine ? 'mine' : ''}" onclick="toggleReaction('${memberId}','${emoji}')"
+        onmouseenter="showReactionTooltip(this,'${escHtml(tooltip)}')"
+        onmouseleave="hideReactionTooltip(this)">${emoji} <span class="count">${reactors.length}</span></button>
+    </div>`;
   });
 
   if (activeUser && activeUser.id !== memberId) {
@@ -946,6 +1249,8 @@ function closeAllPickers() {
 
 document.addEventListener('click', e => {
   if (!e.target.closest('[id^="rp-wrap"]') && !e.target.classList.contains('btn-add-reaction')) closeAllPickers();
+  // Close profile modal on overlay click
+  if (e.target.id === 'profileModal') closeProfileModal();
 });
 
 async function toggleReaction(memberId, emoji) {
@@ -1011,11 +1316,12 @@ function heatmapNav(memberId, delta) {
   buildHeatmap(memberId);
 }
 
-function buildHeatmap(memberId) {
+function buildHeatmap(memberId, realMemberId) {
+  const lookupId = realMemberId || memberId;
   const wrap = document.getElementById(`heatmap-${memberId}`);
   if (!wrap) return;
 
-  const sessions = cachedSessions[memberId] || [];
+  const sessions = cachedSessions[lookupId] || [];
 
   // Normalise all session dates to plain YYYY-MM-DD regardless of timezone offsets
   const sessionDates = new Set(
@@ -1213,13 +1519,18 @@ async function addDay(id, sessionType = null, note = null) {
 
     await sbFetch(`members?id=eq.${id}`, { method: 'PATCH', prefer: 'return=minimal', body: JSON.stringify(patch) });
 
-    // Insert into sessions table
+    // Upsert today's session — delete existing row(s) for today first, then insert fresh
     try {
+      const d = todayISO();
+      const nextDay = (() => { const x = new Date(d + 'T00:00:00Z'); x.setUTCDate(x.getUTCDate() + 1); return x.toISOString().slice(0,10); })();
+      await sbFetch(`sessions?member_id=eq.${id}&logged_at=gte.${d}T00:00:00Z&logged_at=lt.${nextDay}T00:00:00Z`, {
+        method: 'DELETE', prefer: 'return=minimal'
+      });
       await sbFetch('sessions', {
         method: 'POST', prefer: 'return=minimal',
         body: JSON.stringify({ member_id: id, type: sessionType, note: note, logged_at: new Date().toISOString() })
       });
-    } catch(_) { /* sessions table may not exist yet — silent fail */ }
+    } catch(sessionErr) { console.warn('Session table error:', sessionErr.message); }
 
     const newDays = current + 1;
     const milestone = getMilestone(newDays);
@@ -1254,10 +1565,18 @@ async function subDay(id) {
     const patch = { days: current - 1 };
     if (!isAdmin && m?.last_logged === todayISO()) {
       patch.last_logged = null;
+      patch.streak = 0;        // clear streak so re-logging today starts fresh
+      patch.missed_streak = 0;
       const weekStart = getWeekStart();
       if (m?.week_start === weekStart && (m.weekly_days ?? 0) > 0) patch.weekly_days = m.weekly_days - 1;
     }
     await sbFetch(`members?id=eq.${id}`, { method: 'PATCH', prefer: 'return=minimal', body: JSON.stringify(patch) });
+    // Remove today's session row if it exists
+    try {
+      await sbFetch(`sessions?member_id=eq.${id}&logged_at=gte.${todayISO()}T00:00:00&logged_at=lt.${todayISO()}T24:00:00`, {
+        method: 'DELETE', prefer: 'return=minimal'
+      });
+    } catch(_) {}
     await loadAndRender();
   } catch(e) {
     setStatus('Error: ' + e.message, 'error');
@@ -1487,13 +1806,41 @@ function closeResetModal() { document.getElementById('resetModal').classList.rem
 async function confirmReset() {
   closeResetModal(); showLoading(true);
   try {
+    // 1. Snapshot season results before wiping
+    const competitors = cachedMembers.filter(m => !m.is_admin);
+    const results = competitors.map(m => ({
+      id: m.id, name: m.name, days: m.days, icon: m.icon || null,
+      streak: m.streak || 0, pb_streak: m.pb_streak || 0
+    }));
+    // Get current season number
+    let seasonNumber = 1;
+    try {
+      const seasons = await sbFetch('seasons?order=season_number.desc&select=season_number&limit=1');
+      if (seasons?.length) seasonNumber = seasons[0].season_number + 1;
+    } catch(_) {}
+    // Write to seasons table
+    try {
+      await sbFetch('seasons', {
+        method: 'POST', prefer: 'return=minimal',
+        body: JSON.stringify({
+          season_number: seasonNumber,
+          reset_date: new Date().toISOString(),
+          results: JSON.stringify(results)
+        })
+      });
+    } catch(e2) { console.warn('Could not save season archive:', e2.message); }
+
+    // 2. Wipe member scores
     await sbFetch('members?is_admin=eq.false', {
       method: 'PATCH', prefer: 'return=minimal',
       body: JSON.stringify({ days: 0, last_logged: null, streak: 0, pb_streak: 0, weekly_days: 0, week_start: null, missed_streak: 0 })
     });
-    // Optionally clear sessions — comment out if you want to keep history
-    // await sbFetch('sessions?id=neq.00000000-0000-0000-0000-000000000000', { method: 'DELETE', prefer: 'return=minimal' });
-    setStatus('Season reset — everyone back to zero', 'success');
+
+    // 3. Clear rank snapshot so indicators reset
+    localStorage.removeItem('gymboard-rank-snapshot');
+    rankSnapshot = null;
+
+    setStatus(`Season ${seasonNumber - 1} archived — everyone back to zero`, 'success');
     await loadAndRender();
   } catch(e) { setStatus('Reset failed: ' + e.message, 'error'); showLoading(false); }
 }
@@ -1525,19 +1872,463 @@ async function seedTestData() {
   }
 }
 
+
+
+// ── Theme ─────────────────────────────────────────────
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  localStorage.setItem('gymboard-theme', isLight ? 'light' : 'dark');
+  document.getElementById('themeToggle').textContent = isLight ? '🌙' : '☀️';
+}
+function initTheme() {
+  const saved = localStorage.getItem('gymboard-theme');
+  if (saved === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('themeToggle').textContent = '🌙';
+  }
+}
+
+
+// ── Rank snapshot ─────────────────────────────────────
+// Stores { date, ranks: { memberId: rank } } — updated once per day
+let rankSnapshot = null;
+
+function loadRankSnapshot() {
+  try {
+    const raw = localStorage.getItem('gymboard-rank-snapshot');
+    if (raw) rankSnapshot = JSON.parse(raw);
+  } catch(_) {}
+}
+
+function saveRankSnapshot(members) {
+  const today = todayISO();
+  // Only save if we don't have today's snapshot yet
+  if (rankSnapshot?.date === today) return;
+  const competitors = members.filter(m => !m.is_admin);
+  const sorted = [...competitors].sort((a, b) => b.days - a.days || a.name.localeCompare(b.name));
+  let rank = 1;
+  const ranks = {};
+  sorted.forEach((m, i) => {
+    if (i > 0 && m.days < sorted[i-1].days) rank = i + 1;
+    ranks[m.id] = rank;
+  });
+  rankSnapshot = { date: today, ranks };
+  localStorage.setItem('gymboard-rank-snapshot', JSON.stringify(rankSnapshot));
+}
+
+function getRankChange(memberId, currentRank) {
+  if (!rankSnapshot) return null;
+  const prev = rankSnapshot.ranks[memberId];
+  if (prev === undefined) return null;
+  const delta = prev - currentRank; // positive = moved up
+  return delta;
+}
+
+
+// ── Hall of Fame ──────────────────────────────────────
+let cachedSeasons = [];
+
+async function loadSeasons() {
+  try {
+    cachedSeasons = await sbFetch('seasons?order=season_number.desc&select=*') || [];
+  } catch(_) { cachedSeasons = []; }
+}
+
+function renderHof() {
+  const board = document.getElementById('board');
+  if (!cachedSeasons.length) {
+    board.innerHTML = '<div class="hof-empty">No completed seasons yet.<br>Seasons are archived when the admin resets the board.</div>';
+    return;
+  }
+  board.innerHTML = cachedSeasons.map((season, idx) => {
+    const results = Array.isArray(season.results) ? season.results : JSON.parse(season.results || '[]');
+    const sorted = [...results].sort((a, b) => b.days - a.days);
+    const [p1, p2, p3, ...rest] = sorted;
+
+    const podiumHtml = [p1, p2, p3].filter(Boolean).map((p, i) => {
+      const medals = ['🥇','🥈','🥉'];
+      const cls    = ['p1','p2','p3'];
+      return `<div class="hof-podium-place ${cls[i]}">
+        <div class="hof-place-medal">${medals[i]}</div>
+        <div class="hof-place-name">${p.icon ? p.icon + ' ' : ''}${escHtml(p.name)}</div>
+        <div class="hof-place-days">${p.days} days</div>
+      </div>`;
+    }).join('');
+
+    const restHtml = rest.map((p, i) => `
+      <div class="hof-rest-row">
+        <span class="hof-rest-rank">#${i + 4}</span>
+        <span class="hof-rest-name">${p.icon ? p.icon + ' ' : ''}${escHtml(p.name)}</span>
+        <span class="hof-rest-days">${p.days}</span>
+      </div>
+    `).join('');
+
+    const isFirst = idx === 0;
+    return `
+      <div class="hof-season">
+        <div class="hof-season-header" onclick="toggleHofSeason(${season.season_number})">
+          <div>
+            <div class="hof-season-name">Season ${season.season_number}</div>
+            <div class="hof-season-meta">${season.reset_date ? new Date(season.reset_date).toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'}) : ''} · ${results.length} competitors</div>
+          </div>
+          <span class="hof-season-chevron ${isFirst ? 'open' : ''}" id="hof-chevron-${season.season_number}">▾</span>
+        </div>
+        <div class="hof-season-body ${isFirst ? 'open' : ''}" id="hof-body-${season.season_number}">
+          <div class="hof-podium">${podiumHtml}</div>
+          ${restHtml ? `<div class="hof-rest">${restHtml}</div>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleHofSeason(num) {
+  const body    = document.getElementById(`hof-body-${num}`);
+  const chevron = document.getElementById(`hof-chevron-${num}`);
+  body.classList.toggle('open');
+  chevron.classList.toggle('open');
+}
+
+
+// ── Profile activity toggle ────────────────────────────
+let profileActivityMode = 'bar';
+let profileActiveMemberId = null;
+
+function switchProfileActivity(memberId, mode) {
+  profileActiveMemberId = memberId;
+  profileActivityMode = mode;
+  document.getElementById('profileBarWrap').style.display  = mode === 'bar' ? '' : 'none';
+  document.getElementById('profileCalendarWrap').style.display = mode === 'cal' ? '' : 'none';
+  document.getElementById('profileToggleBar').classList.toggle('active', mode === 'bar');
+  document.getElementById('profileToggleCal').classList.toggle('active', mode === 'cal');
+  if (mode === 'cal') {
+    // Init month if not already set
+    if (!heatmapMonth['profile-' + memberId]) {
+      const now = new Date();
+      heatmapMonth['profile-' + memberId] = { year: now.getFullYear(), month: now.getMonth() };
+    }
+    buildHeatmap('profile-' + memberId, memberId);
+  }
+}
+
+// ── Profile modal ─────────────────────────────────────
+function openProfileModal(memberId) {
+  const m = cachedMembers.find(x => x.id === memberId);
+  if (!m) return;
+  const sessions  = cachedSessions[memberId]  || [];
+  const reactions = cachedReactions[memberId] || [];
+
+  const inner = document.getElementById('profileModalInner');
+  const weekStart = getWeekStart();
+  const todayStr  = todayISO();
+
+  // ── Stats ──────────────────────────────────────────
+  const totalDays   = m.days || 0;
+  const streak      = effectiveStreak(m);
+  const pbStreak    = m.pb_streak || 0;
+  // Count directly from sessions table — more reliable than the weekly_days counter
+  const weeklyDays = sessions.filter(s => s.logged_at?.slice(0,10) >= weekStart).length;
+  const totalReacts = reactions.length;
+
+  // ── Type breakdown ─────────────────────────────────
+  const typeCounts = { weights: 0, cardio: 0, sport: 0, other: 0 };
+  sessions.forEach(s => { if (s.type && typeCounts[s.type] !== undefined) typeCounts[s.type]++; });
+  const maxType = Math.max(...Object.values(typeCounts), 1);
+  const typeBreakdownHtml = Object.entries(typeCounts)
+    .filter(([, n]) => n > 0)
+    .sort(([,a],[,b]) => b - a)
+    .map(([type, count]) => `
+      <div class="type-row">
+        <span class="type-row-label ${type}">${SESSION_TYPES[type] || ''} ${type}</span>
+        <div class="type-bar-track"><div class="type-bar-fill ${type}" style="width:${Math.round(count/maxType*100)}%"></div></div>
+        <span class="type-bar-count">${count}</span>
+      </div>
+    `).join('') || '<span class="profile-session-empty">No sessions logged yet</span>';
+
+  // ── Streak graph — last 30 days ────────────────────
+  const sessionDateSet = new Set(sessions.map(s => s.logged_at?.slice(0,10)).filter(Boolean));
+  const bars = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    bars.push({ ds, has: sessionDateSet.has(ds), isToday: ds === todayStr });
+  }
+
+  // Calculate max "consecutive" for visual height — just use 1/0 for now, height = 100% if logged
+  const streakGraphHtml = `
+    <div class="streak-graph">
+      ${bars.map(b => `
+        <div class="streak-bar ${b.has ? (b.isToday ? 'today' : 'has-session') : ''}" style="height:${b.has ? '100%' : '20%'}">
+          <div class="streak-bar-tip">${b.ds}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="streak-graph-labels">
+      <span class="streak-graph-label">30 days ago</span>
+      <span class="streak-graph-label">Today</span>
+    </div>
+  `;
+
+  // ── Milestones ─────────────────────────────────────
+  const milestonesHtml = MILESTONES.map(ms => {
+    const earned = totalDays >= ms;
+    return `<span class="milestone-pip ${earned ? 'earned' : 'unearned'}">${earned ? '🎉' : ''} ${ms}</span>`;
+  }).join('');
+
+  // ── Recent sessions ────────────────────────────────
+  const recentHtml = sessions.length === 0
+    ? '<span class="profile-session-empty">No sessions recorded yet</span>'
+    : `<div class="profile-session-list">
+        ${sessions.slice(0, 20).map(s => {
+          const dt = s.logged_at ? new Date(s.logged_at.slice(0,10) + 'T12:00:00').toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' }) : '—';
+          const typeTag = s.type ? `<span class="session-type-tag ${s.type}">${SESSION_TYPES[s.type] || ''} ${s.type}</span>` : '<span style="color:var(--border)">—</span>';
+          const note = s.note && s.note !== 'Test session 💪' ? `<span class="profile-session-note">"${escHtml(s.note)}"</span>` : '<span></span>';
+          return `<div class="profile-session-row">
+            <span class="profile-session-date">${dt}</span>
+            ${typeTag}
+            ${note}
+          </div>`;
+        }).join('')}
+      </div>`;
+
+  // ── Render ─────────────────────────────────────────
+  inner.innerHTML = `
+    <div class="profile-header">
+      <div class="profile-title">
+        ${m.icon ? `<span class="profile-icon-big">${m.icon}</span>` : ''}
+        <div>
+          <div class="profile-name">${escHtml(m.name)}</div>
+          <div class="profile-rank-tag">Rank #${m._rank || '—'} &nbsp;·&nbsp; ${totalDays} day${totalDays !== 1 ? 's' : ''} this season</div>
+        </div>
+      </div>
+      <button class="btn-close-profile" onclick="closeProfileModal()">✕</button>
+    </div>
+
+    <div class="profile-stats-row">
+      <div class="profile-stat-box">
+        <div class="profile-stat-val">${totalDays}</div>
+        <div class="profile-stat-lbl">Total Days</div>
+      </div>
+      <div class="profile-stat-box">
+        <div class="profile-stat-val green">${streak}</div>
+        <div class="profile-stat-lbl">Streak</div>
+      </div>
+      <div class="profile-stat-box">
+        <div class="profile-stat-val orange">${pbStreak}</div>
+        <div class="profile-stat-lbl">Best Streak</div>
+      </div>
+      <div class="profile-stat-box">
+        <div class="profile-stat-val blue">${weeklyDays}</div>
+        <div class="profile-stat-lbl">This Week</div>
+      </div>
+    </div>
+
+    <div class="profile-section" id="profileActivitySection">
+      <div class="profile-section-title" style="display:flex;align-items:center;justify-content:space-between;">
+        <span id="profileActivityLabel">Activity — last 30 days</span>
+        <div class="activity-toggle">
+          <button class="activity-toggle-btn active" id="profileToggleBar" onclick="switchProfileActivity('${m.id}','bar')">30 Days</button>
+          <button class="activity-toggle-btn" id="profileToggleCal" onclick="switchProfileActivity('${m.id}','cal')">Calendar</button>
+        </div>
+      </div>
+      <div id="profileBarWrap">${streakGraphHtml}</div>
+      <div id="profileCalendarWrap" style="display:none;">
+        <div class="heatmap-wrap" id="heatmap-profile-${m.id}"></div>
+      </div>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-section-title">Session Breakdown</div>
+      <div class="type-breakdown">${typeBreakdownHtml}</div>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-section-title">Milestones</div>
+      <div class="milestones-row">${milestonesHtml}</div>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-section-title">Session History</div>
+      ${recentHtml}
+    </div>
+  `;
+
+  profileActivityMode = 'bar';
+  profileActiveMemberId = memberId;
+  document.getElementById('profileModal').classList.add('open');
+}
+
+function closeProfileModal() {
+  document.getElementById('profileModal').classList.remove('open');
+}
+
+
+// ── Edit / undo session ───────────────────────────────
+let editSessionTarget = null;
+let selectedEditType  = null;
+
+function openEditSessionModal(memberId) {
+  editSessionTarget = memberId;
+  selectedEditType  = null;
+
+  // Pre-fill with today's session data
+  const lastSession = (cachedSessions[memberId] || [])[0];
+  const hasSession  = lastSession && lastSession.logged_at?.slice(0,10) === todayISO();
+
+  // Summary line
+  const typeLabel = hasSession?.type ? `${SESSION_TYPES[hasSession.type] || ''} ${hasSession.type}` : '—';
+  const noteLabel = hasSession?.note && hasSession.note !== 'Test session 💪' ? `"${hasSession.note}"` : '';
+  document.getElementById('editSessionSummary').textContent =
+    `Logged: ${typeLabel}${noteLabel ? ' — ' + noteLabel : ''}`;
+
+  // Pre-select current type
+  document.querySelectorAll('[id^="editType"]').forEach(b => b.className = 'session-type-btn');
+  if (hasSession?.type) {
+    selectEditType(hasSession.type, true);
+  }
+  document.getElementById('editSessionNote').value = (hasSession?.note && hasSession.note !== 'Test session 💪') ? hasSession.note : '';
+
+  document.getElementById('editSessionModal').classList.add('open');
+}
+
+function closeEditSessionModal() {
+  document.getElementById('editSessionModal').classList.remove('open');
+  editSessionTarget = null;
+  selectedEditType  = null;
+}
+
+function selectEditType(type, silent) {
+  selectedEditType = type;
+  document.querySelectorAll('[id^="editType"]').forEach(b => b.className = 'session-type-btn');
+  const btn = document.getElementById('editType' + type.charAt(0).toUpperCase() + type.slice(1));
+  if (btn) btn.className = `session-type-btn selected-${type}`;
+}
+
+async function submitEditSession() {
+  const id = editSessionTarget;
+  if (!id) return;
+  const note = document.getElementById('editSessionNote').value.trim() || null;
+  closeEditSessionModal();
+
+  // Update the session row for today — delete and re-insert with new values
+  showLoading(true);
+  try {
+    const d = todayISO();
+    const nextDay = (() => { const x = new Date(d + 'T00:00:00Z'); x.setUTCDate(x.getUTCDate() + 1); return x.toISOString().slice(0,10); })();
+    await sbFetch(`sessions?member_id=eq.${id}&logged_at=gte.${d}T00:00:00Z&logged_at=lt.${nextDay}T00:00:00Z`, {
+      method: 'DELETE', prefer: 'return=minimal'
+    });
+    await sbFetch('sessions', {
+      method: 'POST', prefer: 'return=minimal',
+      body: JSON.stringify({ member_id: id, type: selectedEditType, note, logged_at: new Date().toISOString() })
+    });
+    setStatus('Session updated!', 'success');
+    await loadAndRender();
+  } catch(e) {
+    setStatus('Update failed: ' + e.message, 'error');
+    showLoading(false);
+  }
+}
+
+async function confirmUndoSession() {
+  const id = editSessionTarget;
+  if (!id) return;
+  closeEditSessionModal();
+  showLoading(true);
+  try {
+    // Fetch current state
+    const rows = await sbFetch(`members?id=eq.${id}&select=days,last_logged,weekly_days,week_start`);
+    const m = rows?.[0];
+    if (!m) { showLoading(false); return; }
+
+    const patch = {
+      days:         Math.max(0, (m.days ?? 0) - 1),
+      last_logged:  null,
+      streak:       0,
+      missed_streak: 0
+    };
+    const weekStart = getWeekStart();
+    if (m.week_start === weekStart && (m.weekly_days ?? 0) > 0) {
+      patch.weekly_days = m.weekly_days - 1;
+    }
+
+    await sbFetch(`members?id=eq.${id}`, { method: 'PATCH', prefer: 'return=minimal', body: JSON.stringify(patch) });
+
+    // Delete today's session row
+    const d = todayISO();
+    const nextDay = (() => { const x = new Date(d + 'T00:00:00Z'); x.setUTCDate(x.getUTCDate() + 1); return x.toISOString().slice(0,10); })();
+    await sbFetch(`sessions?member_id=eq.${id}&logged_at=gte.${d}T00:00:00Z&logged_at=lt.${nextDay}T00:00:00Z`, {
+      method: 'DELETE', prefer: 'return=minimal'
+    });
+
+    setStatus("Today's session removed", 'info');
+    await loadAndRender();
+  } catch(e) {
+    setStatus('Undo failed: ' + e.message, 'error');
+    showLoading(false);
+  }
+}
+
+// ── Rename ────────────────────────────────────────────
+function openRenameModal() {
+  if (!activeUser) return;
+  const input = document.getElementById('renameInput');
+  input.value = activeUser.name;
+  document.getElementById('renameError').textContent = '';
+  document.getElementById('renameModal').classList.add('open');
+  setTimeout(() => { input.focus(); input.select(); }, 100);
+}
+function closeRenameModal() { document.getElementById('renameModal').classList.remove('open'); }
+async function submitRename() {
+  const input = document.getElementById('renameInput');
+  const newName = input.value.trim().toUpperCase();
+  const errEl = document.getElementById('renameError');
+  if (!newName) { errEl.textContent = 'Name cannot be empty'; return; }
+  if (newName === activeUser.name) { closeRenameModal(); return; }
+  try {
+    await sbFetch(`members?id=eq.${activeUser.id}`, {
+      method: 'PATCH', prefer: 'return=minimal',
+      body: JSON.stringify({ name: newName })
+    });
+    activeUser.name = newName;
+    document.getElementById('activeBarName').textContent = newName;
+    closeRenameModal();
+    setStatus('Name updated!', 'success');
+    await loadAndRender();
+  } catch(e) {
+    errEl.textContent = e.message.includes('unique') ? 'That name is already taken' : 'Error — try again';
+  }
+}
+
+// ── Reaction tooltips ─────────────────────────────────
+function showReactionTooltip(btn, text) {
+  hideReactionTooltip(btn);
+  const tip = document.createElement('div');
+  tip.className = 'reaction-tooltip';
+  tip.textContent = text;
+  btn.parentElement.appendChild(tip);
+}
+function hideReactionTooltip(btn) {
+  btn.parentElement.querySelectorAll('.reaction-tooltip').forEach(t => t.remove());
+}
+
 // ── Keyboard ──────────────────────────────────────────
 document.getElementById('newName').addEventListener('keydown', e => { if (e.key === 'Enter') addMember(); });
 document.getElementById('newPin').addEventListener('keydown',  e => { if (e.key === 'Enter') addMember(); });
+document.getElementById('renameInput').addEventListener('keydown', e => { if (e.key === 'Enter') submitRename(); });
 document.addEventListener('keydown', e => {
   if (document.getElementById('pinModal').classList.contains('open')) {
     if (e.key >= '0' && e.key <= '9') pinKey(e.key);
     if (e.key === 'Backspace') pinDel();
     if (e.key === 'Escape') closePinModal();
   }
-  if (e.key === 'Escape') { closeResetModal(); closeLogModal(); closeIconModal(); }
+  if (e.key === 'Escape') { closeResetModal(); closeLogModal(); closeEditSessionModal(); closeIconModal(); closeRenameModal(); closeProfileModal(); }
 });
 
 // ── Init ──────────────────────────────────────────────
+initTheme();
+loadRankSnapshot();
 renderIconGrid('signupIconGrid', 'signup', null);
 updateCountdown();
 setInterval(updateCountdown, 1000);
@@ -1546,3 +2337,11 @@ loadAndRender();
 </script>
 </body>
 </html>
+
+<!-- bug fixes: 
+ - fix the stamp on the calendar, i have 29th may logged but no green stamp on calendar. could be todo with cache only? maybe we make it a field in the db
+ - also when editing todays session and clicking a type ie: cardio etc, it doesn't stamp on profile 
+ - says in the week breakdown i cmellz has 1 logged but i dont, so not sure why it says i do? mightve fixed the value in db but need to check how it ends up in this state
+ - if we depend on any cached data that could benefit being added into db lets just do this
+ -->
+
