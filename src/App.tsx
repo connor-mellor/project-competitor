@@ -1,11 +1,14 @@
+import { Routes, Route } from 'react-router-dom'
 import './App.css'
+
+import Home from  '@/pages/Home'
 
 function App() {
   return (
     <>
-      <section id="center">
-        <h1> Bills little Uniform </h1>
-      </section>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
     </>
   )
 }
