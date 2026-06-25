@@ -1,0 +1,63 @@
+.countdownBar {
+    background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--accent);
+    padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1.5rem; position: relative; overflow: hidden;
+}
+
+.countdownBar::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,60,60,0.03), transparent);
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+.countdownLabel { 
+    font-size: 0.7rem; 
+    letter-spacing: 0.25em; 
+    text-transform: uppercase; 
+    color: var(--muted); 
+}
+
+.countdownDate { 
+    font-family: 'Black Ops One', cursive; 
+    font-size: 1.1rem; 
+    color: var(--accent); 
+    letter-spacing: 0.1em; 
+}
+
+.countdownDays { 
+    text-align: right; 
+}
+
+.daysNumber { 
+    font-family: 'Black Ops One', 
+    cursive; 
+    font-size: 2rem; 
+    color: var(--gold); 
+    line-height: 1; 
+}
+
+.daysLabel { 
+    font-size: 0.65rem; 
+    letter-spacing: 0.2em; 
+    text-transform: uppercase; 
+    color: var(--muted); 
+}
+
+.countdownTime { 
+    font-family: 'Barlow Condensed', sans-serif; 
+    font-size: 0.8rem; 
+    font-weight: 600; 
+    color: var(--muted); 
+    letter-spacing: 0.15em; 
+    margin-top: 0.15rem; 
+}
+
+@keyframes shimmer { 
+    0%, 100% { 
+        transform: translateX(-100%); 
+    } 
+    
+    50% { 
+        transform: translateX(100%); 
+    } 
+}
