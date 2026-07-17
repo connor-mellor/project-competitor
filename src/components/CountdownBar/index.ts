@@ -1,1 +1,1 @@
-export {default} from './CountdownBar';
+export { default } from './CountdownBar';
