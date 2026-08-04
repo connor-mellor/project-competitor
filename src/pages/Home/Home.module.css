@@ -1,10 +1,10 @@
 .homeContainer {
-  min-width: 728px;
-  max-width: 728px; 
+  /* min-width: 728px;
+  max-width: 728px;
   margin: 0 auto;
-  padding: 0 1rem; 
+  padding: 0 1rem;
   position: relative;
-  z-index: 2;
+  z-index: 2; */
 }
 
 .totalSessionsContainer {
@@ -18,4 +18,42 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--muted);
-} 
+}
+
+.tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--border);
+}
+
+.tabButton {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  padding: 0.65rem 1rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-right: 1px solid var(--border);
+}
+
+.tabButton:last-child {
+  border-right: none;
+}
+
+.tabButton:hover {
+  color: var(--text);
+  background: var(--surface2);
+}
+
+.tabButton.active {
+  background: var(--surface);
+  color: var(--gold);
+  border-bottom: 2px solid var(--gold);
+}

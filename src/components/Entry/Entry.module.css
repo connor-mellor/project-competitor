@@ -1,0 +1,257 @@
+.entry {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+  position: relative;
+  animation: slideIn 0.4s ease both;
+}
+
+.entry:hover {
+  border-color: #333;
+}
+
+.rank1 {
+  border-left: 3px solid var(--gold);
+}
+
+.rank2 {
+  border-left: 3px solid var(--silver);
+}
+
+.rank3 {
+  border-left: 3px solid var(--bronze);
+}
+
+.isActive {
+  border-color: var(--green);
+}
+
+.inactiveWarning {
+  border-left: 3px solid var(--accent);
+  opacity: 0.7;
+}
+
+.entryMain {
+  display: grid;
+  grid-template-columns: 3rem 1fr auto auto;
+  align-items: start;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+}
+
+.entryRank {
+  font-family: 'Black Ops One', cursive;
+  font-size: 1.4rem;
+  text-align: center;
+  color: var(--muted);
+  padding-top: 0.25rem;
+}
+
+.rank1 .entryRank {
+  color: var(--gold);
+}
+.rank2 .entryRank {
+  color: var(--silver);
+}
+.rank3 .entryRank {
+  color: var(--bronze);
+}
+
+.entryControls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding-top: 0.1rem;
+}
+
+.entryInfo {
+  min-width: 0;
+}
+
+.entryName {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.entryName:hover {
+  color: var(--gold);
+}
+
+.entryTagline {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
+  letter-spacing: 0.05em;
+  font-style: italic;
+}
+
+.entryLastLogged {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+  letter-spacing: 0.08em;
+}
+
+.entryInactive {
+  font-size: 0.75rem;
+  color: var(--accent);
+  margin-top: 0.1rem;
+  letter-spacing: 0.08em;
+}
+
+.entryDays {
+  text-align: center;
+}
+
+.entry-days {
+  text-align: center;
+}
+
+.daysCount {
+  font-family: 'Black Ops One', cursive;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--green);
+}
+
+.daysUnit {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+}
+
+.btnControl {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--border);
+  background: var(--rank-bg);
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+}
+
+.btnControl.add:hover:not(:disabled) {
+  background: var(--green);
+  border-color: var(--green);
+  color: #000;
+  transform: scale(1.1);
+}
+
+.btnControl.sub:hover:not(:disabled) {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.btnControl:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.btnLock {
+  width: 2rem;
+  height: auto;
+  min-height: 4rem;
+  border: 1px solid var(--border);
+  background: var(--rank-bg);
+  color: var(--muted);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.btnLock:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.entryBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.25rem;
+}
+
+.entryTodaySession {
+  font-size: 0.78rem;
+  margin-top: 0.2rem;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.entryNote {
+  font-size: 0.75rem;
+  color: var(--silver);
+  margin-top: 0.2rem;
+  letter-spacing: 0.05em;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.entryTrash {
+  font-size: 0.75rem;
+  color: var(--orange);
+  margin-top: 0.15rem;
+  letter-spacing: 0.05em;
+  font-style: italic;
+  animation: fadeInUp 0.4s ease;
+}
+
+.entryExpand {
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.35s ease;
+}
+
+.entryExpand.open {
+  max-height: 700px;
+}
+
+.entryIcon {
+  font-size: 1.3rem;
+  line-height: 1;
+  margin-bottom: 0.1rem;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
