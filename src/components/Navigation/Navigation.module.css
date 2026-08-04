@@ -1,0 +1,81 @@
+.navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  background: #161616;
+  transform: translateX(-260px);
+  transition: transform 0.25s ease;
+  z-index: 100;
+}
+
+.open {
+  transform: translateX(0);
+}
+
+.menuTab {
+  position: absolute;
+  top: 0px;
+  right: -48px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: #161616;
+  color: white;
+  cursor: pointer;
+}
+
+.menuTab svg {
+  width: 22px;
+  height: 22px;
+}
+
+.menuTab:hover svg {
+  color: var(--accent);
+}
+
+.imageContainer {
+  width: 100%;
+}
+
+.navLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 40px;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.navLink:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--gold);
+}
+
+.navLink svg {
+  width: 20px;
+  height: 20px;
+}
+
+.bottomLinks {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

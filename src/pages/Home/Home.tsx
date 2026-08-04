@@ -14,19 +14,6 @@ export default function Home() {
 
   return (
     <div className={styles.homeContainer}>
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '30px 0 0' }}>
-        <img
-          src="https://i.pinimg.com/236x/4a/e1/4d/4ae14db7332ebedef17b803a3aaaee2a.jpg"
-          alt="stronk"
-          style={{
-            height: 'auto',
-            width: '200px',
-            aspectRatio: 1 / 1,
-            borderRadius: '50%',
-          }}
-        />
-      </div>
-
       <Header />
       <div className={styles.totalSessionsContainer}>
         <TotalSessions />
