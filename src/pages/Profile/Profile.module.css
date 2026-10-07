@@ -1,0 +1,41 @@
+.profileContainer {
+  padding: 0 35px;
+}
+
+.container,
+.rankContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.iconContainer {
+  background: #161616;
+  border: 2px solid #f73a3a;
+  padding: 5px;
+}
+
+.icon,
+.rankIcon {
+  font-size: 2rem;
+}
+
+.textContainer,
+.rankTextContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0 15px;
+}
+
+.rankContainer {
+}
+
+.rankIcon {
+}
+
+.rankTextContainer {
+}
+
+.experienceContainer {
+}

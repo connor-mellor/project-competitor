@@ -1,0 +1,25 @@
+.navBackdrop {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .app.navOpen .content {
+    margin-left: 0 !important;
+  }
+
+  .navBackdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .app.navOpen .navBackdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

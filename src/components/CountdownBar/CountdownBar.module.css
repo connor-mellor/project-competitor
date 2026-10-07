@@ -35,6 +35,7 @@
 
 .countdownDays {
   text-align: right;
+  padding-right: 2.5rem;
 }
 
 .daysNumber {
@@ -58,6 +59,100 @@
   color: var(--muted);
   letter-spacing: 0.15em;
   margin-top: 0.15rem;
+}
+
+.editButton {
+  position: absolute;
+  top: 50%;
+  right: 1.5rem;
+  transform: translateY(-50%);
+  z-index: 1;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.editButton:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.editRow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.editInput {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+}
+
+.editInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.editSave,
+.editCancel {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.editSave {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.editSave:hover:not(:disabled) {
+  background: rgba(255, 60, 60, 0.08);
+}
+
+.editSave:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.editCancel:hover {
+  border-color: var(--muted);
+  color: var(--text, var(--muted));
+}
+
+.editError {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: var(--accent);
 }
 
 @keyframes shimmer {

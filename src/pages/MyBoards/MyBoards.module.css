@@ -1,0 +1,89 @@
+/* MyBoards.module.css */
+.myBoardsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  box-shadow: var(--panel-shadow);
+  color: var(--text);
+}
+
+.totalSessionsContainer {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.totalSessionsContainer p {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tabButton {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  font: inherit;
+  color: var(--text);
+  background: var(--tab-bg);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-shadow: var(--text-shadow);
+}
+
+.tabButton.active {
+  background: var(--tab-active-bg);
+  color: var(--tab-active-text);
+}
+
+/* ---------- RuneScape-only structure ---------- */
+
+:global([data-theme='runescape']) .myBoardsContainer {
+  max-width: 760px;
+  margin-inline: auto;
+  border: 2px solid #1e1a12;
+  outline: 2px solid #6b6054;
+  outline-offset: -6px;
+}
+
+:global([data-theme='runescape']) .totalSessionsContainer {
+  justify-content: center;
+  padding: 0.5rem;
+  background: rgb(0 0 0 / 0.25);
+  box-shadow:
+    inset 1px 1px 0 #1e1a12,
+    inset -1px -1px 0 #6b6054;
+}
+
+/* big "total level" number in RS yellow */
+:global([data-theme='runescape']) .totalSessionsContainer > :first-child {
+  color: #ffff00;
+  font-size: 2rem;
+}
+
+:global([data-theme='runescape']) .tabButton {
+  /* raised stone button */
+  box-shadow:
+    inset 1px 1px 0 #6b6054,
+    inset -1px -1px 0 #2a2319;
+  text-transform: none;
+}
+
+:global([data-theme='runescape']) .tabButton:hover {
+  color: #ffffff;
+}
+
+:global([data-theme='runescape']) .tabButton.active {
+  /* pressed-in, like a selected interface tab */
+  box-shadow:
+    inset 1px 1px 0 #2a2319,
+    inset -1px -1px 0 #8a7c68;
+}

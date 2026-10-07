@@ -1,0 +1,70 @@
+/* src/styles/theme.css */
+
+/* If you have a RuneScape font file, put it in /public/fonts and uncomment.
+   Check the licence first; fan recreations are fine for a friends-only project.
+@font-face {
+  font-family: 'RuneScape';
+  src: url('/fonts/runescape.woff2') format('woff2');
+  font-display: swap;
+}
+*/
+
+:root {
+  --bg: #0f1115;
+  --surface: #181b22;
+  --surface-border: #2a2f3a;
+  --text: #e8eaed;
+  --text-muted: #9aa0a6;
+  --accent: #6366f1;
+  --accent-contrast: #ffffff;
+  --radius: 12px;
+  --font-body: system-ui, sans-serif;
+  --font-display: system-ui, sans-serif;
+  --text-shadow: none;
+  --panel-shadow: 0 1px 3px rgb(0 0 0 / 0.4);
+  --tab-bg: transparent;
+  --tab-active-bg: var(--accent);
+  --tab-active-text: var(--accent-contrast);
+  --bar-track: #2a2f3a;
+  --bar-fill: var(--accent);
+}
+
+[data-theme='runescape'] {
+  --bg: #2b2418;
+  --surface: #4b4237;
+  --surface-border: #1e1a12;
+  --text: #ff981f; /* RS orange */
+  --text-muted: #c8b79a;
+  --accent: #ffff00; /* RS yellow */
+  --accent-contrast: #000000;
+  --radius: 0;
+  --font-body: 'RuneScape', 'Trebuchet MS', Verdana, sans-serif;
+  --font-display: 'RuneScape', 'Trebuchet MS', Verdana, sans-serif;
+  --text-shadow: 1px 1px 0 #000;
+  --panel-shadow: inset 1px 1px 0 #6b6054, inset -1px -1px 0 #2a2319, 0 0 0 2px #1e1a12;
+  --tab-bg: #4b4237;
+  --tab-active-bg: #6b5e4c;
+  --tab-active-text: #ffff00;
+  --bar-track: #5a1010; /* RS hitpoints bar: red track, green fill */
+  --bar-fill: #00a000;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  text-shadow: var(--text-shadow);
+}
+
+/* subtle stone texture for the RS theme, no image needed */
+[data-theme='runescape'] body {
+  background-color: var(--bg);
+  background-image:
+    repeating-linear-gradient(0deg, rgb(0 0 0 / 0.08) 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 0.02) 0 2px, transparent 2px 4px);
+}
+
+[data-theme='runescape'] img,
+[data-theme='runescape'] canvas {
+  image-rendering: pixelated;
+}

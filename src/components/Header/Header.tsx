@@ -1,12 +1,18 @@
 import styles from './Header.module.css';
 
-export default function Header() {
+type HeaderProps = {
+  titleSectionOne?: string;
+  titleSectionTwo?: string;
+  subtitle?: string;
+};
+
+export default function Header({ titleSectionOne, titleSectionTwo, subtitle }: HeaderProps) {
   return (
     <header className={styles.header}>
       <h1 className={styles.title}>
-        GYM<span className={styles.accent}>BOARD</span>
+        {titleSectionOne || ''} <span className={styles.accent}>{titleSectionTwo || ''}</span>
       </h1>
-      <p className={styles.subtitle}>Who's actually putting in the work</p>
+      <p className={styles.subtitle}>{subtitle || ''}</p>
     </header>
   );
 }
